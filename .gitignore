@@ -1,2 +1,8 @@
-.idea/
-odg-env/
+.idea/*
+odg-env/*
+api/__pycache__/*
+api/migrations/__pycache__/*
+core/__pycache__/*
+core/migrations/__pycache__/*
+odg/__pycache__/*
+
