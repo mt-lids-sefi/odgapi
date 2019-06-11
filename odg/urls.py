@@ -15,10 +15,12 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from api.views import file
+from api.views import file, FileUploadView
+from django.conf.urls import url
 
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    url(r'^upload/(?P<filename>[^/]+)$', FileUploadView.as_view()),
     path("file/", file, name="file"),
 ]
