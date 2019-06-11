@@ -6,5 +6,7 @@ core/__pycache__/*
 core/migrations/__pycache__/*
 odg/__pycache__/*
 .vscode/
+core/migrations/*
+media/*
 
 
