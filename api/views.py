@@ -12,21 +12,22 @@ from .serializers import FileSerializer
 # This will return a list of books
 @api_view(["GET"])
 def file(request):
-    #files = ["Pro Python", "Fluent Python", "Speaking javascript", "The Go programming language"]
+    # files = ["Pro Python", "Fluent Python", "Speaking javascript", "The Go programming language"]
     files = File.objects.all()
     serializer = FileSerializer(files, many=True)
     return JsonResponse(serializer.data, safe=False)
-    #return Response(status=status.HTTP_200_OK, data={"data": files})
+    # return Response(status=status.HTTP_200_OK, data={"data": files})
+
 
 class FileUploadView(APIView):
     parser_class = (FileUploadParser,)
 
     def post(self, request, *args, **kwargs):
 
-      file_serializer = FileSerializer(data=request.data)
+        file_serializer = FileSerializer(data=request.data)
 
-      if file_serializer.is_valid():
-          file_serializer.save()
-          return Response(file_serializer.data, status=status.HTTP_201_CREATED)
-      else:
-          return Response(file_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        if file_serializer.is_valid():
+            file_serializer.save()
+            return Response(file_serializer.data, status=status.HTTP_201_CREATED)
+        else:
+            return Response(file_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
