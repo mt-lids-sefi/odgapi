@@ -15,7 +15,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-from api.views import file
+from api.views import file, file_data
 from django.conf import settings
 from django.conf.urls.static import static
 
@@ -25,6 +25,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('upload/', include('api.urls')),
     path("file/", file, name="file"),
+    path("map/<int:pk>", file_data, name="file_data"),
 ]
 
 if settings.DEBUG:
