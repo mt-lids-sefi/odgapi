@@ -9,6 +9,7 @@ import numpy as np
 from core.models import File
 from .serializers import FileSerializer
 from django.shortcuts import get_object_or_404
+import json
 
 # This will return a list of files
 @api_view(["GET"])
@@ -32,8 +33,10 @@ def file_data(request, pk):
     df['latitude'] = df['latitude'].replace(r'^$', np.nan, regex=True)
     df['latitude'] = df['latitude'].fillna(-0.99999)
     df['latitude'] = pd.to_numeric(df['latitude'])
+
     df = df.to_json(orient='index')
-    return Response(data={"coords": df}, status=status.HTTP_200_OK)
+    d = json.loads(df)
+    return Response(data={"coords": d}, status=status.HTTP_200_OK)
 
 class FileUploadView(APIView):
     parser_class = (FileUploadParser,)
