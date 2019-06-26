@@ -24,7 +24,7 @@ def file(request):
 def file_data(request, pk):
     file = get_object_or_404(File, document_id=pk)
     print(file.name)
-    df = pd.read_csv(file.file)
+    df = pd.read_csv(file.doc)
     df['longitude'] = df['longitude'].replace(r'\s+', np.nan, regex=True)
     df['longitude'] = df['longitude'].replace(r'^$', np.nan, regex=True)
     df['longitude'] = df['longitude'].fillna(-0.99999)
@@ -43,7 +43,7 @@ class FileUploadView(APIView):
 
     def post(self, request, *args, **kwargs):
 
-        file_serializer = FileSerializer(data=request.data)
+        file_serializer = FileSerializer(data=request.data,  context={"request": request})
 
         if file_serializer.is_valid():
             file_serializer.save()
