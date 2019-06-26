@@ -21,3 +21,10 @@
 ### Para ejecutar:
 
 `python3 manage.py runserver`
+
+
+#### Acceder
+
+La API será consumida desde el front end. Para ver los endpoints acceder a:
+
+`http://localhost:8000`
