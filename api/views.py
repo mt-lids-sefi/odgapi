@@ -24,15 +24,17 @@ def file(request):
 def file_data(request, pk):
     file = get_object_or_404(File, document_id=pk)
     print(file.name)
+    lat = file.lat_col
+    lon = file.lon_col
     df = pd.read_csv(file.doc)
-    df['longitude'] = df['longitude'].replace(r'\s+', np.nan, regex=True)
-    df['longitude'] = df['longitude'].replace(r'^$', np.nan, regex=True)
-    df['longitude'] = df['longitude'].fillna(-0.99999)
-    df['longitude'] = pd.to_numeric(df['longitude'])
-    df['latitude'] = df['latitude'].replace(r'\s+', np.nan, regex=True)
-    df['latitude'] = df['latitude'].replace(r'^$', np.nan, regex=True)
-    df['latitude'] = df['latitude'].fillna(-0.99999)
-    df['latitude'] = pd.to_numeric(df['latitude'])
+    df[lon] = df[lon].replace(r'\s+', np.nan, regex=True)
+    df[lon] = df[lon].replace(r'^$', np.nan, regex=True)
+    df[lon] = df[lon].fillna(-0.99999)
+    df[lon] = pd.to_numeric(df[lon])
+    df[lat] = df[lat].replace(r'\s+', np.nan, regex=True)
+    df[lat] = df[lat].replace(r'^$', np.nan, regex=True)
+    df[lat] = df[lat].fillna(-0.99999)
+    df[lat] = pd.to_numeric(df[lat])
 
     df = df.to_json(orient='index')
     d = json.loads(df)
