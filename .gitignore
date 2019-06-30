@@ -8,5 +8,6 @@ odg/__pycache__/*
 .vscode/
 core/migrations/*
 media/*
+db.sqlite3
 
 
