@@ -38,7 +38,7 @@ def file_data(request, pk):
 
     df = df.to_json(orient='index')
     d = json.loads(df)
-    return Response(data={"coords": d}, status=status.HTTP_200_OK)
+    return Response(data={"coords": d, "lat_col": file.lat_col, "lon_col": file.lon_col}, status=status.HTTP_200_OK)
 
 class FileUploadView(APIView):
     parser_class = (FileUploadParser,)
