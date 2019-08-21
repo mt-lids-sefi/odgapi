@@ -9,5 +9,5 @@ odg/__pycache__/*
 core/migrations/*
 media/*
 db.sqlite3
-
+__pycache__/*
 
