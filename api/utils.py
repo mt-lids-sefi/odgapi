@@ -27,9 +27,12 @@ def nearby_points(points, dist):
             pos.append(idx)
     return pos
 
-def join_dfs(df1):
+def unroll(df1):
     adf = pd.DataFrame()
     for index, row in df1.iterrows():
         for nearp in row['nearby_points']:
             adf = adf.append({'id1': index, 'id2': nearp}, ignore_index=True)
     return adf
+
+def join_dfs(ids, df1, df2):
+    return ids.join(df1, on='id1').join(df2, on='id2')

@@ -15,7 +15,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-from api.views import file, file_data
+from api.views import file, file_data, files_join
 from django.conf import settings
 from django.conf.urls.static import static
 
@@ -26,6 +26,7 @@ urlpatterns = [
     path('upload/', include('api.urls')),
     path("file/", file, name="file"),
     path("map/<int:pk>", file_data, name="file_data"),
+    path("merge-ab/<int:pkA>/<int:pkB>/<int:max_distance>", files_join, name="files_join"),
 ]
 
 if settings.DEBUG:
