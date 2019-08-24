@@ -26,7 +26,7 @@ urlpatterns = [
     path('upload/', include('api.urls')),
     path("file/", file, name="file"),
     path("map/<int:pk>", file_data, name="file_data"),
-    path("merge-ab/<int:pkA>/<int:pkB>/<int:max_distance>", files_join, name="files_join"),
+    path("join/<int:pkA>/<int:pkB>/<int:max_distance>", files_join, name="files_join"),
 ]
 
 if settings.DEBUG:

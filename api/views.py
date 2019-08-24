@@ -68,9 +68,9 @@ def files_join(request, pkA, pkB, max_distance):
     unrolled = utils.unroll(fileA_df)
     joined = utils.join_dfs(unrolled, fileA_df, fileB_df)
     print(len(joined.index))
+    joined = joined.drop(columns=['distances'])
     joined = joined.to_json(orient='index')
     d = json.loads(joined)
-
     return Response(data={"PEPE": d}, status=status.HTTP_200_OK)
 
 
