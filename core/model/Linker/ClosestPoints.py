@@ -1,7 +1,7 @@
-from core.model import LinkStrategy
+from core.model.Linker import LinkStrategy
 
 
-class Poligon(LinkStrategy):
+class ClosestPoints(LinkStrategy):
 
     def setDistance(self, distance):
         self.distance=distance
