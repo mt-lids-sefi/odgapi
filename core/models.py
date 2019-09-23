@@ -10,3 +10,4 @@ class File(models.Model):
     document_id = models.AutoField(primary_key=True)
     lat_col= models.CharField(max_length=50, null=True)
     lon_col = models.CharField(max_length=50, null=True)
+
