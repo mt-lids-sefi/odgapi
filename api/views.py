@@ -7,8 +7,9 @@ from rest_framework.views import APIView
 from api import utils
 import pandas as pd
 import numpy as np
-from core.models import File
-from .serializers import FileSerializer
+from core.model.files.File import File
+from core.model.files.LinkedFile import LinkedFile
+from .serializers import FileSerializer, IFileSerializer
 from django.shortcuts import get_object_or_404
 import json
 
@@ -17,7 +18,8 @@ import json
 @api_view(["GET"])
 def file(request):
     files = File.objects.all()
-    serializer = FileSerializer(files, many=True)
+    linkedFiles = LinkedFile.objects.all()
+    serializer = IFileSerializer(files, many=True)
     return JsonResponse(serializer.data, safe=False)
 
 @api_view(["GET"])
@@ -79,7 +81,7 @@ class FileUploadView(APIView):
 
     def post(self, request, *args, **kwargs):
 
-        file_serializer = FileSerializer(data=request.data,  context={"request": request})
+        file_serializer = IFileSerializer(data=request.data,  context={"request": request})
 
         if file_serializer.is_valid():
             file_serializer.save()

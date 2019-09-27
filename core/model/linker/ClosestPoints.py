@@ -1,4 +1,4 @@
-from core.model.Linker import LinkStrategy
+from core.model.linker import LinkStrategy
 
 
 class ClosestPoints(LinkStrategy):

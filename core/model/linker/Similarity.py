@@ -1,4 +1,4 @@
-from core.model.Linker.LinkStrategy import LinkStrategy
+from core.model.linker.LinkStrategy import LinkStrategy
 
 
 class Similarity(LinkStrategy):

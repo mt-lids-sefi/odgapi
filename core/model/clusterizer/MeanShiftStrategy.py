@@ -1,4 +1,4 @@
-from core.model.Clusterizer.Clusterizer import Clusterizer
+from core.model.clusterizer.Clusterizer import Clusterizer
 
 
 class MeanShiftStrategy(Clusterizer):
