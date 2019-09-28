@@ -6,13 +6,13 @@ from core.model.files.LinkedFile import LinkedFile
 class FileSerializer(serializers.ModelSerializer):
     class Meta:
         model = File
-        fields = "__all__"
+        fields = ['id', 'name', 'description', 'lat_col', 'lon_col']
 
 
 class LinkedFileSerializer(serializers.ModelSerializer):
     class Meta:
         model = LinkedFile
-        fields = "__all__"
+        fields = ['id', 'name', 'description', 'lat_col', 'lon_col']
 
 
 class IFileSerializer(serializers.Serializer):

@@ -41,7 +41,8 @@ INSTALLED_APPS = [
     'core',
     'corsheaders',  # added to solve CORS
     'rest_framework',
-    'picklefield'
+    'picklefield',
+    'polymorphic'
 ]
 
 MIDDLEWARE = [
