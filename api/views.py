@@ -37,7 +37,7 @@ def file(request):
 
 @api_view(["GET"])
 def file_data(request, pk):
-    file = get_object_or_404(File, document_id=pk)
+    file = get_object_or_404(IFile, id=pk)
     print(file.name)
     lat = file.lat_col
     lon = file.lon_col
@@ -88,7 +88,7 @@ def files_join(request, pkA, pkB, max_distance):
     d = json.loads(joined)
     return Response(data={"PEPE": d}, status=status.HTTP_200_OK)
 
-
+# endpoint para guardar un FILE.
 class FileUploadView(APIView):
     parser_class = (FileUploadParser,)
 
