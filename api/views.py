@@ -9,6 +9,7 @@ import pandas as pd
 import numpy as np
 from core.model.files.File import File
 from core.model.files.LinkedFile import LinkedFile
+from core.model.files.IFile import IFile
 from .serializers import FileSerializer, IFileSerializer, LinkedFileSerializer
 from django.shortcuts import get_object_or_404
 import json
@@ -17,11 +18,20 @@ import json
 # This will return a list of files
 @api_view(["GET"])
 def file(request):
-    files = File.objects.all()
-    linkedFiles = LinkedFile.objects.all()
+    # files = File.objects.all()
+    # linkedFiles = LinkedFile.objects.all()
+    #
+    # serializer = IFileSerializer(files, many=True)
+    # serializerb = IFileSerializer(linkedFiles, many=True)
+    #
+    # fs = list(serializer.data)
+    # linkedfs = list(serializerb.data)
+    # data = fs + linkedfs
+    # print(fs)
+
+    files = IFile.objects.all()
 
     serializer = IFileSerializer(files, many=True)
-    serializerb = IFileSerializer(linkedFiles, many=True)
     print(serializer.data)
     return JsonResponse(serializer.data, safe=False)
 
