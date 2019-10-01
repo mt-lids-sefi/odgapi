@@ -8,9 +8,8 @@ from api import utils
 import pandas as pd
 import numpy as np
 from core.model.files.File import File
-from core.model.files.LinkedFile import LinkedFile
-from core.model.files.IFile import IFile
-from .serializers import FileSerializer, IFileSerializer, LinkedFileSerializer
+from core.model.files.IDataSource import IDataSource
+from .serializers import FileSerializer, IDataSourceSerializer
 from django.shortcuts import get_object_or_404
 import json
 
@@ -18,33 +17,16 @@ import json
 # This will return a list of files
 @api_view(["GET"])
 def file(request):
-    files = IFile.objects.all()
-    serializer = IFileSerializer(files, many=True)
+    files = IDataSource.objects.all()
+    serializer = IDataSourceSerializer(files, many=True)
     return JsonResponse(serializer.data, safe=False)
 
 @api_view(["GET"])
 def file_data(request, pk):
-    file = get_object_or_404(IFile, id=pk)
-    print(file.name)
-    file.getData()
-    lat = file.lat_col
-    lon = file.lon_col
-    df = pd.read_csv(file.doc, error_bad_lines=False)
-
-    cols =  list(df.columns.values)
-    df[lon] = df[lon].replace(r'\s+', np.nan, regex=True)
-    df[lon] = df[lon].replace(r'^$', np.nan, regex=True)
-    df[lon] = df[lon].fillna(-0.99999)
-    df[lon] = pd.to_numeric(df[lon])
-    df[lat] = df[lat].replace(r'\s+', np.nan, regex=True)
-    df[lat] = df[lat].replace(r'^$', np.nan, regex=True)
-    df[lat] = df[lat].fillna(-0.99999)
-    df[lat] = pd.to_numeric(df[lat])
-
-    df = df.to_json(orient='index')
-    d = json.loads(df)
-    
-    return Response(data={"rows": d, "lat_col": file.lat_col, "lon_col": file.lon_col, "name": file.name, "desc":file.description, "cols": cols}, status=status.HTTP_200_OK)
+    source = get_object_or_404(IDataSource, id=pk)
+    d = source.get_data()
+    cols = source.get_cols()
+    return Response(data={"rows": d, "lat_col": source.lat_col, "lon_col": source.lon_col, "name": source.name, "desc":source.description, "cols": cols}, status=status.HTTP_200_OK)
 
 @api_view(["GET"])
 def files_join(request, pkA, pkB, max_distance):

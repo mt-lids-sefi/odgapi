@@ -15,7 +15,7 @@ class LinkedFileSerializer(serializers.ModelSerializer):
         fields = ['id', 'name', 'description', 'lat_col', 'lon_col', 'dataframe']
 
 
-class IFileSerializer(serializers.Serializer):
+class IDataSourceSerializer(serializers.Serializer):
     @classmethod
     def get_serializer(cls, model):
         if model == File:

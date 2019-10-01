@@ -13,4 +13,9 @@ __pycache__/*
 venv/
 core/model/__pycache__/
 core/model/files/__pycache__/
+api/__init__.pyc
+api/models.pyc
+core/__init__.pyc
+odg/__init__.pyc
+odg/settings.pyc
 
