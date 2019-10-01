@@ -5,7 +5,10 @@ from core.model.files.IFile import IFile
 
 
 class LinkedFile(IFile):
-    dataframe = PickledObjectField(null=True)
+    dataset = PickledObjectField(null=True)
 
-    def setData(self, data):
-        self.dataframe = data
+    def set_data(self, data):
+        self.dataset = data
+
+    def get_data(self):
+        pass

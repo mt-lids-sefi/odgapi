@@ -18,27 +18,15 @@ import json
 # This will return a list of files
 @api_view(["GET"])
 def file(request):
-    # files = File.objects.all()
-    # linkedFiles = LinkedFile.objects.all()
-    #
-    # serializer = IFileSerializer(files, many=True)
-    # serializerb = IFileSerializer(linkedFiles, many=True)
-    #
-    # fs = list(serializer.data)
-    # linkedfs = list(serializerb.data)
-    # data = fs + linkedfs
-    # print(fs)
-
     files = IFile.objects.all()
-
     serializer = IFileSerializer(files, many=True)
-    print(serializer.data)
     return JsonResponse(serializer.data, safe=False)
 
 @api_view(["GET"])
 def file_data(request, pk):
     file = get_object_or_404(IFile, id=pk)
     print(file.name)
+    file.getData()
     lat = file.lat_col
     lon = file.lon_col
     df = pd.read_csv(file.doc, error_bad_lines=False)

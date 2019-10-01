@@ -9,4 +9,7 @@ class File (IFile):
     uploaded_at = models.DateTimeField(auto_now_add=True)
 
 
+def get_data():
+    pass
+
 
