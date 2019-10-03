@@ -1,7 +1,7 @@
 from abc import abstractmethod
-
 from django.db import models
 from polymorphic.models import PolymorphicModel
+from picklefield.fields import PickledObjectField
 
 
 class IDataSource(PolymorphicModel):
@@ -9,12 +9,12 @@ class IDataSource(PolymorphicModel):
     name = models.CharField(max_length=128, blank=True, verbose_name='Nombre')
     lat_col = models.CharField(max_length=50, null=True)
     lon_col = models.CharField(max_length=50, null=True)
+    dataset = PickledObjectField(null=True)
 
 
-@abstractmethod
-def get_data():
-    pass
+    @abstractmethod
+    def get_data(self):
+        pass
 
-@abstractmethod
-def get_cols():
-    pass
+    def get_cols(self):
+        return list(self.dataset.columns.values)

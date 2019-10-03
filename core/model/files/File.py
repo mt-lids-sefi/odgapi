@@ -11,10 +11,21 @@ class File (IDataSource):
                            validators=[FileExtensionValidator(allowed_extensions=['csv'])])
     uploaded_at = models.DateTimeField(auto_now_add=True)
 
+    def create(cls, name, description, lat_col, lon_col, doc):
+        dataset = pd.read_csv(doc, error_bad_lines=False)
+        print(dataset)
+        file = cls(name=name, description=description, lat_col=lat_col, lon_col=lon_col, doc=doc, dataset=dataset)
+        return file
+
+    def save(self, *args, **kwargs):
+        dataset = pd.read_csv(self.doc, error_bad_lines=False)
+        self.dataset = dataset
+        super().save(*args, **kwargs)  # Call the "real" save() method.
+
     def get_data(self):
         lat = self.lat_col
         lon = self.lon_col
-        df = pd.read_csv(self.doc, error_bad_lines=False)
+        df = self.dataset
         df[lon] = df[lon].replace(r'\s+', np.nan, regex=True)
         df[lon] = df[lon].replace(r'^$', np.nan, regex=True)
         df[lon] = df[lon].fillna(-0.99999)
@@ -27,6 +38,4 @@ class File (IDataSource):
         df = df.to_json(orient='index')
         return json.loads(df)
 
-    def get_cols(self):
-        df = pd.read_csv(self.doc, error_bad_lines=False)
-        return list(df.columns.values)
+
