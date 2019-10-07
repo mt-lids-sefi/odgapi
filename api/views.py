@@ -21,12 +21,15 @@ def file(request):
     serializer = IDataSourceSerializer(files, many=True)
     return JsonResponse(serializer.data, safe=False)
 
+
 @api_view(["GET"])
 def file_data(request, pk):
     source = get_object_or_404(IDataSource, id=pk)
     d = source.get_data()
+    d = d.to_json(orient='index')
     cols = source.get_cols()
-    return Response(data={"rows": d, "lat_col": source.lat_col, "lon_col": source.lon_col, "name": source.name, "desc":source.description, "cols": cols}, status=status.HTTP_200_OK)
+    return Response(data={"rows": json.loads(d), "lat_col": source.lat_col, "lon_col": source.lon_col, "name": source.name, "desc":source.description, "cols": cols}, status=status.HTTP_200_OK)
+
 
 @api_view(["GET"])
 def files_join(request, pkA, pkB, max_distance):
@@ -57,6 +60,7 @@ def files_join(request, pkA, pkB, max_distance):
     joined = joined.to_json(orient='index')
     d = json.loads(joined)
     return Response(data={"PEPE": d}, status=status.HTTP_200_OK)
+
 
 # endpoint para guardar un FILE.
 class FileUploadView(APIView):
