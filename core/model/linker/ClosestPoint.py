@@ -15,9 +15,8 @@ class ClosestPoint(LinkStrategy):
         lonA = fileA.lon_col
 
         latB = fileB.lat_col
-
-
         lonB = fileB.lon_col
+        
         fileA_df = fileA_df[np.isfinite(fileA_df[latA])]
         fileA_df = fileA_df[np.isfinite(fileA_df[lonA])]
 
@@ -32,4 +31,6 @@ class ClosestPoint(LinkStrategy):
         fileA_df['closest_point'] = [fileB_df.iloc[x.argmin()]['pointB'] for x in fileA_df['distances']]
         fileA_df['closest_dist'] = [min(x) for x in fileA_df['distances']]
         fileA_df['closest_point_index'] = [x.argmin() for x in fileA_df['distances']]
-        return fileA_df.join(fileB_df, on='closest_point_index')
+        joined = fileA_df.join(fileB_df, on='closest_point_index')
+        filtered = joined.query('closest_dist'<self.distance)
+        return filtered

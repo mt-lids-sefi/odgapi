@@ -1,7 +1,6 @@
-from core.model.clusterizer.Clusterizer import Clusterizer
+from core.model.clusterizer import ClusterStrategy
 
-
-class KMeansStrategy(Clusterizer):
+class KMeansStrategy(ClusterStrategy):
 
     def __init__(self):
         self.distance= 3
