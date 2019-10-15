@@ -1,7 +1,7 @@
-from core.model.clusterizer.Clusterizer import Clusterizer
+from core.model.clusterizer import ClusterStrategy
 
 
-class MeanShiftStrategy(Clusterizer):
+class MeanShiftStrategy(ClusterStrategy):
 
     def clusterize(self, linkedFile, colA, colB):
         pass
