@@ -18,4 +18,4 @@ api/models.pyc
 core/__init__.pyc
 odg/__init__.pyc
 odg/settings.pyc
-
+core/model/linker/__pycache__/*

@@ -12,7 +12,7 @@ class FileSerializer(serializers.ModelSerializer):
 class LinkedFileSerializer(serializers.ModelSerializer):
     class Meta:
         model = LinkedFile
-        fields = ['id', 'name', 'description', 'lat_col', 'lon_col', 'dataframe']
+        fields = ['id', 'name', 'description', 'lat_col', 'lon_col']
 
 
 class IDataSourceSerializer(serializers.Serializer):
