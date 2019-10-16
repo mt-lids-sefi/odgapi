@@ -1,4 +1,3 @@
-from abc import abstractmethod
 from django.db import models
 from polymorphic.models import PolymorphicModel
 from picklefield.fields import PickledObjectField
@@ -11,10 +10,8 @@ class IDataSource(PolymorphicModel):
     lon_col = models.CharField(max_length=50, null=True)
     dataset = PickledObjectField(null=True)
 
-
-    @abstractmethod
     def get_data(self):
-        pass
+        return self.dataset
 
     def get_cols(self):
         return list(self.dataset.columns.values)

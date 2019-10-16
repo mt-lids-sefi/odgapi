@@ -12,6 +12,7 @@ from core.model.App import App
 from core.model.files.File import File
 from core.model.files.IDataSource import IDataSource
 from core.model.linker.ClosestPoint import ClosestPoint
+from core.model.linker.Polygon import Polygon
 from .serializers import FileSerializer, IDataSourceSerializer
 from django.shortcuts import get_object_or_404
 import json
@@ -94,6 +95,21 @@ def link_closest_point(request, pk_a, pk_b, max_distance):
     linked_file = App.link_files(pk_a, pk_b, link_strategy)
 
     #api specific
+    data = linked_file.get_data().to_json(orient='index')
+    data = json.loads(data)
+    return Response(data={"data": data}, status=status.HTTP_200_OK)
+
+
+@api_view(["GET"])
+def link_polygon(request, pk_a, pk_b, max_distance):
+    # create the strategy
+    params = {'distance': max_distance}
+    link_strategy = Polygon(params)
+
+    # create & save the linkedfile
+    linked_file = App.link_files(pk_a, pk_b, link_strategy)
+
+    # api specific
     data = linked_file.get_data().to_json(orient='index')
     data = json.loads(data)
     return Response(data={"data": data}, status=status.HTTP_200_OK)

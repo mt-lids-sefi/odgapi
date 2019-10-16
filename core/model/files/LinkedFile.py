@@ -10,15 +10,16 @@ class LinkedFile(IDataSource):
     link_strategy = PickledObjectField(null=True)
     #dataset es el linkeddata
 
-    # def __init__(self):
-    #     super().__init__()
-    #     self.set_name()
+    def __init__(self, source_a, source_b, link_strategy):
+        super().__init__()
+        self.name = source_a.get_name()+source_b.get_name()
+        self.sourceA = source_a
+        self.sourceB = source_b
+        self.link_strategy = link_strategy
+        self.set_latlng_cols(source_a.lat_col, source_a.lon_col)
 
     def set_data(self, data):
         self.dataset = data
-
-    def get_data(self):
-        return self.dataset
 
     def set_latlng_cols(self, lat, lon):
         self.lat_col = lat

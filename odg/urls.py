@@ -15,7 +15,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-from api.views import file, file_data, files_join, link_closest_point
+from api.views import file, file_data, files_join, link_closest_point, link_polygon
 from django.conf import settings
 from django.conf.urls.static import static
 
@@ -28,6 +28,7 @@ urlpatterns = [
     path("map/<int:pk>", file_data, name="file_data"),
     path("join/<int:pkA>/<int:pkB>/<int:max_distance>", files_join, name="files_join"),
     path("link_closest_point/<int:pk_a>/<int:pk_b>/<int:max_distance>", link_closest_point, name="link_closest_point"),
+    path("link_polygon/<int:pk_a>/<int:pk_b>/<int:max_distance>", link_polygon, name="link_polygon"),
 ]
 
 if settings.DEBUG:

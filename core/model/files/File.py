@@ -30,7 +30,3 @@ class File (IDataSource):
         df[lat] = df[lat].fillna(-0.99999)
         df[lat] = pd.to_numeric(df[lat])
         self.dataset = df
-
-    '''returns the dataset'''
-    def get_data(self):
-        return self.dataset
