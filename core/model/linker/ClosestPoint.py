@@ -37,7 +37,7 @@ class ClosestPoint(LinkStrategy):
         file_a_df['closest_point'] = [file_b_df.iloc[x.argmin()]['pointB'] for x in file_a_df['distances']]
         file_a_df['closest_dist'] = [min(x) for x in file_a_df['distances']]
         file_a_df['closest_point_index'] = [x.argmin() for x in file_a_df['distances']]
-        joined = file_a_df.join(file_b_df, on='closest_point_index')
+        joined = file_a_df.join(file_b_df, on='closest_point_index', rsuffix='_b')
         filtered = joined.query('closest_dist < '+str(self.distance))
-        filtered = filtered.drop(columns=['distances'])
+        filtered = filtered.drop(columns=['distances', 'closest_point_index'])
         return filtered
