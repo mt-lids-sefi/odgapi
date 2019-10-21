@@ -39,9 +39,9 @@ def file_data(request, pk):
 
 
 @api_view(["GET"])
-def files_join(request, pkA, pkB, max_distance):
-    fileA = get_object_or_404(File, document_id=pkA)
-    fileB = get_object_or_404(File, document_id=pkB)
+def files_join(request, pk_a, pk_b, max_distance):
+    fileA = get_object_or_404(File, document_id=pk_a)
+    fileB = get_object_or_404(File, document_id=pk_b)
     fileA_df = pd.read_csv(fileA.doc, error_bad_lines=False)
     fileB_df = pd.read_csv(fileB.doc, error_bad_lines=False)
 
@@ -113,3 +113,24 @@ def link_polygon(request, pk_a, pk_b, max_distance):
     data = linked_file.get_data().to_json(orient='index')
     data = json.loads(data)
     return Response(data={"data": data}, status=status.HTTP_200_OK)
+
+
+@api_view(["GET"])
+def link_closest_point_preview(request, pk_a, pk_b, max_distance):
+    params = {'distance': max_distance}
+    link_strategy = ClosestPoint(params)
+    data_preview = App.link_files_preview(pk_a, pk_b, link_strategy)
+    data_preview = data_preview.to_json(orient='index')
+    data = json.loads(data_preview)
+    return Response(data={"data": data}, status=status.HTTP_200_OK)
+
+
+@api_view(["GET"])
+def link_polygon_preview(request, pk_a, pk_b, max_distance):
+    params = {'distance': max_distance}
+    link_strategy = Polygon(params)
+    data_preview = App.link_files_preview(pk_a, pk_b, link_strategy)
+    data_preview = data_preview.to_json(orient='index')
+    data = json.loads(data_preview)
+    return Response(data={"data": data}, status=status.HTTP_200_OK)
+

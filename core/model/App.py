@@ -33,3 +33,10 @@ class App:
         linked_file.save()
 
         return linked_file
+
+    @staticmethod
+    def link_files_preview(pk_a, pk_b, link_strategy):
+        ds_a = App.get_ds(pk_a)
+        ds_b = App.get_ds(pk_b)
+        dataset = link_strategy.link(ds_a, ds_b)
+        return dataset
