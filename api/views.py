@@ -116,8 +116,18 @@ def link_polygon(request, pk_a, pk_b, max_distance):
 
 
 @api_view(["GET"])
-def link_closest_point_preview(request, pk_a, pk_b, max_distance):
-    params = {'distance': max_distance}
+def link_closest_point_preview(request, pk_a, pk_b):
+    params = {'distance': 0, 'filter': False}
+    link_strategy = ClosestPoint(params)
+    data_preview = App.link_files_preview(pk_a, pk_b, link_strategy)
+    data_preview = data_preview.to_json(orient='index')
+    data = json.loads(data_preview)
+    return Response(data={"data": data}, status=status.HTTP_200_OK)
+
+
+@api_view(["GET"])
+def link_closest_point_filter_preview(request, pk_a, pk_b, max_distance):
+    params = {'distance': max_distance, 'filter': True}
     link_strategy = ClosestPoint(params)
     data_preview = App.link_files_preview(pk_a, pk_b, link_strategy)
     data_preview = data_preview.to_json(orient='index')
