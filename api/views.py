@@ -37,39 +37,6 @@ def file_data(request, pk):
               "desc": source.description, "cols": cols}, status=status.HTTP_200_OK)
 
 
-
-@api_view(["GET"])
-def files_join(request, pk_a, pk_b, max_distance):
-    fileA = get_object_or_404(File, document_id=pk_a)
-    fileB = get_object_or_404(File, document_id=pk_b)
-    fileA_df = pd.read_csv(fileA.doc, error_bad_lines=False)
-    fileB_df = pd.read_csv(fileB.doc, error_bad_lines=False)
-
-    fileA_df = fileA_df[np.isfinite(fileA_df[fileA.lat_col])]
-    fileA_df = fileA_df[np.isfinite(fileA_df[fileA.lon_col])]
-
-    fileB_df = fileB_df[np.isfinite(fileB_df[fileB.lat_col])]
-    fileB_df = fileB_df[np.isfinite(fileB_df[fileB.lon_col])]
-
-    fileA_df['pointA'] = [(x, y) for x, y in zip(fileA_df[fileA.lat_col], fileA_df[fileA.lon_col])]
-    fileB_df['pointB'] = [(x, y) for x, y in zip(fileB_df[fileB.lat_col], fileB_df[fileB.lon_col])]
-
-    fileA_df['distances'] = [utils.haversine_np(x, y, list(fileB_df[fileB.lat_col]), list(fileB_df[fileB.lon_col])) for
-                             x, y in
-                             zip(fileA_df[fileA.lat_col], fileA_df[fileA.lon_col])]
-    fileA_df['closest_point'] = [fileB_df.iloc[x.argmin()]['pointB'] for x in fileA_df['distances']]
-    fileA_df['closest_dist'] = [min(x) for x in fileA_df['distances']]
-    fileA_df['nearby_points'] = [utils.nearby_points(x, max_distance) for x in fileA_df['distances']]
-    fileA_df['count'] = [len(x) for x in fileA_df['nearby_points']]
-    unrolled = utils.unroll(fileA_df)
-    joined = utils.join_dfs(unrolled, fileA_df, fileB_df)
-    print(len(joined.index))
-    joined = joined.drop(columns=['distances'])
-    joined = joined.to_json(orient='index')
-    d = json.loads(joined)
-    return Response(data={"PEPE": d}, status=status.HTTP_200_OK)
-
-
 #save FILE endpoint.
 class FileUploadView(APIView):
     parser_class = (FileUploadParser,)
@@ -120,9 +87,10 @@ def link_closest_point_preview(request, pk_a, pk_b):
     params = {'distance': 0, 'filter': False}
     link_strategy = ClosestPoint(params)
     data_preview = App.link_files_preview(pk_a, pk_b, link_strategy)
+    cols = data_preview.columns.values
     data_preview = data_preview.to_json(orient='index')
     data = json.loads(data_preview)
-    return Response(data={"data": data}, status=status.HTTP_200_OK)
+    return Response(data={"data": data, "cols": cols}, status=status.HTTP_200_OK)
 
 
 @api_view(["GET"])
@@ -130,9 +98,10 @@ def link_closest_point_filter_preview(request, pk_a, pk_b, max_distance):
     params = {'distance': max_distance, 'filter': True}
     link_strategy = ClosestPoint(params)
     data_preview = App.link_files_preview(pk_a, pk_b, link_strategy)
+    cols = data_preview.columns.values
     data_preview = data_preview.to_json(orient='index')
     data = json.loads(data_preview)
-    return Response(data={"data": data}, status=status.HTTP_200_OK)
+    return Response(data={"data": data, "cols":cols}, status=status.HTTP_200_OK)
 
 
 @api_view(["GET"])
