@@ -19,3 +19,9 @@ class IDataSource(PolymorphicModel):
     def get_name(self):
         return self.name
 
+    def set_name(self, name):
+        self.name = name
+
+    def set_description(self, description):
+        self.description = description
+

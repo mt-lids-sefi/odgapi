@@ -20,13 +20,15 @@ class App:
         return get_object_or_404(IDataSource, id=pk)
 
     @staticmethod
-    def link_files(pk_a, pk_b, link_strategy):
+    def link_files(pk_a, pk_b, link_strategy, name, description):
         ds_a = App.get_ds(pk_a)
         ds_b = App.get_ds(pk_b)
         linked_file = LinkedFile()
         linked_file.set_lstrategy(link_strategy)
         linked_file.set_latlng_cols(ds_a.lat_col, ds_a.lon_col)
         linked_file.set_sources(ds_a, ds_b)
+        linked_file.set_name(name)
+        linked_file.set_description(description)
         linked_file.link()
 
         # save the linkedfile

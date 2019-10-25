@@ -26,7 +26,7 @@ class LinkedFile(IDataSource):
         self.lat_col = lat
         self.lon_col = lon
 
-    def set_name(self):
+    def set_def_name(self):
         self.name = self.sourceA.get_name() + self.sourceB.get_name()
 
     def set_lstrategy(self, strategy):
@@ -35,7 +35,6 @@ class LinkedFile(IDataSource):
     def set_sources(self, sa, sb):
         self.sourceA = sa
         self.sourceB = sb
-        self.set_name()
 
     def link(self):
         self.dataset = self.link_strategy.link(self.sourceA, self.sourceB)

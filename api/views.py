@@ -4,12 +4,8 @@ from rest_framework.decorators import api_view
 from rest_framework.parsers import FileUploadParser
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from api import utils
-import pandas as pd
-import numpy as np
 
 from core.model.App import App
-from core.model.files.File import File
 from core.model.files.IDataSource import IDataSource
 from core.model.linker.ClosestPoint import ClosestPoint
 from core.model.linker.Polygon import Polygon
@@ -37,7 +33,7 @@ def file_data(request, pk):
               "desc": source.description, "cols": cols}, status=status.HTTP_200_OK)
 
 
-#save FILE endpoint.
+# save FILE endpoint.
 class FileUploadView(APIView):
     parser_class = (FileUploadParser,)
 
@@ -53,18 +49,33 @@ class FileUploadView(APIView):
 
 
 @api_view(["GET"])
-def link_closest_point(request, pk_a, pk_b, max_distance):
-    #create the strategy
-    params = {'distance': max_distance}
+def link_closest_point(request, pk_a, pk_b, name, description):
+    # create the strategy
+    params = {'distance': 0, 'filter': False}
     link_strategy = ClosestPoint(params)
 
-    #create & save the linkedfile
-    linked_file = App.link_files(pk_a, pk_b, link_strategy)
+    # create & save the linkedfile
+    linked_file = App.link_files(pk_a, pk_b, link_strategy, name, description)
 
-    #api specific
+    # api specific
     data = linked_file.get_data().to_json(orient='index')
     data = json.loads(data)
     return Response(data={"data": data}, status=status.HTTP_200_OK)
+
+
+@api_view(["GET"])
+def link_closest_point_filter(request, pk_a, pk_b, max_distance, name, description):
+    # create the strategy
+    params = {'distance': max_distance, 'filter': False}
+    link_strategy = ClosestPoint(params)
+
+    # create & save the linkedfile
+    linked_file = App.link_files(pk_a, pk_b, link_strategy, name, description)
+
+    # api specific
+    data = linked_file.get_data().to_json(orient='index')
+    data = json.loads(data)
+    return Response(data={"data": data, "id": linked_file.id}, status=status.HTTP_200_OK)
 
 
 @api_view(["GET"])
@@ -79,7 +90,7 @@ def link_polygon(request, pk_a, pk_b, max_distance):
     # api specific
     data = linked_file.get_data().to_json(orient='index')
     data = json.loads(data)
-    return Response(data={"data": data}, status=status.HTTP_200_OK)
+    return Response(data={"data": data, "id": linked_file.id}, status=status.HTTP_200_OK)
 
 
 @api_view(["GET"])
