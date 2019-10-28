@@ -66,7 +66,7 @@ def link_closest_point(request, pk_a, pk_b, name, description):
 @api_view(["GET"])
 def link_closest_point_filter(request, pk_a, pk_b, max_distance, name, description):
     # create the strategy
-    params = {'distance': max_distance, 'filter': False}
+    params = {'distance': max_distance, 'filter': True}
     link_strategy = ClosestPoint(params)
 
     # create & save the linkedfile
