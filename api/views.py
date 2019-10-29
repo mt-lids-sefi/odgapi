@@ -79,13 +79,13 @@ def link_closest_point_filter(request, pk_a, pk_b, max_distance, name, descripti
 
 
 @api_view(["GET"])
-def link_polygon(request, pk_a, pk_b, max_distance):
+def link_polygon(request, pk_a, pk_b, max_distance, name, description):
     # create the strategy
     params = {'distance': max_distance}
     link_strategy = Polygon(params)
 
     # create & save the linkedfile
-    linked_file = App.link_files(pk_a, pk_b, link_strategy)
+    linked_file = App.link_files(pk_a, pk_b, link_strategy, name, description)
 
     # api specific
     data = linked_file.get_data().to_json(orient='index')
@@ -120,7 +120,8 @@ def link_polygon_preview(request, pk_a, pk_b, max_distance):
     params = {'distance': max_distance}
     link_strategy = Polygon(params)
     data_preview = App.link_files_preview(pk_a, pk_b, link_strategy)
+    cols = data_preview.columns.values
     data_preview = data_preview.to_json(orient='index')
     data = json.loads(data_preview)
-    return Response(data={"data": data}, status=status.HTTP_200_OK)
+    return Response(data={"data": data, "cols":cols}, status=status.HTTP_200_OK)
 
