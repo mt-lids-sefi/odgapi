@@ -1,3 +1,4 @@
-class ClusterStrategy():
-    def clusterize(self, lFile, colA, colB):
+
+class ClusterStrategy:
+    def clusterize(self, ids, col_a, col_b):
         pass

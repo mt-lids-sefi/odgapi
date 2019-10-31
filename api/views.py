@@ -112,7 +112,7 @@ def link_closest_point_filter_preview(request, pk_a, pk_b, max_distance):
     cols = data_preview.columns.values
     data_preview = data_preview.to_json(orient='index')
     data = json.loads(data_preview)
-    return Response(data={"data": data, "cols":cols}, status=status.HTTP_200_OK)
+    return Response(data={"data": data, "cols": cols}, status=status.HTTP_200_OK)
 
 
 @api_view(["GET"])
@@ -123,5 +123,5 @@ def link_polygon_preview(request, pk_a, pk_b, max_distance):
     cols = data_preview.columns.values
     data_preview = data_preview.to_json(orient='index')
     data = json.loads(data_preview)
-    return Response(data={"data": data, "cols":cols}, status=status.HTTP_200_OK)
+    return Response(data={"data": data, "cols": cols}, status=status.HTTP_200_OK)
 
