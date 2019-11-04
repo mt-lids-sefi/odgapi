@@ -19,3 +19,5 @@ core/__init__.pyc
 odg/__init__.pyc
 odg/settings.pyc
 core/model/linker/__pycache__/*
+core/model/clusterizer/__pycache__/*
+

@@ -1,6 +1,6 @@
 from pandas import DataFrame
 from sklearn.cluster import KMeans
-from core.model.clusterizer import ClusterStrategy
+from core.model.clusterizer.ClusterStrategy import ClusterStrategy
 
 class KMeansStrategy(ClusterStrategy):
 

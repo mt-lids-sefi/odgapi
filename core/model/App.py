@@ -42,3 +42,13 @@ class App:
         ds_b = App.get_ds(pk_b)
         dataset = link_strategy.link(ds_a, ds_b)
         return dataset
+
+    @staticmethod
+    def clusterize(name, description, ids, cluster_strategy, col_a, col_b, observations):
+        pass
+
+    @staticmethod
+    def clusterize_preview(ids, cluster_strategy, col_a, col_b):
+        source = App.get_ds(ids)
+        results = cluster_strategy.clusterize(source, col_a, col_b)
+        return results
