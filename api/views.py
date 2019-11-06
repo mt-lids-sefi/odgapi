@@ -7,6 +7,7 @@ from rest_framework.views import APIView
 
 from core.model.App import App
 from core.model.clusterizer.KMeansStrategy import KMeansStrategy
+from core.model.clusterizer.MeanShiftStrategy import MeanShiftStrategy
 from core.model.files.IDataSource import IDataSource
 from core.model.linker.ClosestPoint import ClosestPoint
 from core.model.linker.Polygon import Polygon
@@ -129,5 +130,11 @@ def link_polygon_preview(request, pk_a, pk_b, max_distance):
 @api_view(["GET"])
 def clusterize_kmeans_preview(request, pk_ids, col_a, col_b):
     kmeans_strategy = KMeansStrategy()
+    results = App.clusterize_preview(pk_ids, kmeans_strategy, col_a, col_b)
+    return Response(data={"results": results}, status=status.HTTP_200_OK)
+
+@api_view(["GET"])
+def clusterize_meanshift_preview(request, pk_ids, col_a, col_b):
+    kmeans_strategy = MeanShiftStrategy()
     results = App.clusterize_preview(pk_ids, kmeans_strategy, col_a, col_b)
     return Response(data={"results": results}, status=status.HTTP_200_OK)

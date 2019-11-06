@@ -16,7 +16,8 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from api.views import file, file_data, link_closest_point, link_polygon, link_closest_point_preview, \
-    link_polygon_preview, link_closest_point_filter_preview, link_closest_point_filter, clusterize_kmeans_preview
+    link_polygon_preview, link_closest_point_filter_preview, link_closest_point_filter, clusterize_kmeans_preview, \
+    clusterize_meanshift_preview
 from django.conf import settings
 from django.conf.urls.static import static
 
@@ -34,7 +35,8 @@ urlpatterns = [
     path("link_closest_point_preview/<int:pk_a>/<int:pk_b>", link_closest_point_preview, name="link_closest_point_preview"),
     path("link_closest_point_filter_preview/<int:pk_a>/<int:pk_b>/<int:max_distance>", link_closest_point_filter_preview, name="link_closest_point_filter_preview"),
     path("link_polygon_preview/<int:pk_a>/<int:pk_b>/<int:max_distance>", link_polygon_preview, name="link_polygon_preview"),
-    path("clusterize_kmeans_preview/<int:pk_ids>/<str:col_a>/<str:col_b>", clusterize_kmeans_preview, name="clusterize_kmeans_preview")
+    path("clusterize_kmeans_preview/<int:pk_ids>/<str:col_a>/<str:col_b>", clusterize_kmeans_preview, name="clusterize_kmeans_preview"),
+    path("clusterize_meanshift_preview/<int:pk_ids>/<str:col_a>/<str:col_b>", clusterize_meanshift_preview, name="clusterize_meanshift_preview")
 ]
 
 if settings.DEBUG:
