@@ -2,10 +2,15 @@ from pandas import DataFrame
 from sklearn.cluster import KMeans
 from core.model.clusterizer.ClusterStrategy import ClusterStrategy
 
+
 class KMeansStrategy(ClusterStrategy):
 
-    def __init__(self):
-        self.k = 3
+    def __init__(self, params):
+        super().__init__(params)
+        if params['k']:
+            self.set_k(self.params['k'])
+        else:
+            self.set_k(3)
 
 #las columnas que se reciben ya están caterogizadas
     def clusterize(self, ds, col_a, col_b):

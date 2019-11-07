@@ -1,4 +1,4 @@
-from core.model.clusterizer import ClusterStrategy
+from core.model.clusterizer.ClusterStrategy import ClusterStrategy
 from pandas import DataFrame
 from sklearn.cluster import MeanShift
 

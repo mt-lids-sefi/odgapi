@@ -17,8 +17,8 @@ class ClusterConfiguration(Configuration):
     def set_strategy(self, strategy):
         self.cluster_strategy = strategy
 
-    def set_file(self, file):
-        self.ds = file
+    def set_ds(self, ds):
+        self.ds = ds
 
     def set_cols(self, col_a, col_b):
         self.col_a = col_a

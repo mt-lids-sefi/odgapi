@@ -128,13 +128,14 @@ def link_polygon_preview(request, pk_a, pk_b, max_distance):
     return Response(data={"data": data, "cols": cols}, status=status.HTTP_200_OK)
 
 @api_view(["GET"])
-def clusterize_kmeans_preview(request, pk_ids, col_a, col_b):
-    kmeans_strategy = KMeansStrategy()
+def clusterize_kmeans_preview(request, pk_ids, col_a, col_b, k=3):
+    params = {'k': k}
+    kmeans_strategy = KMeansStrategy(params)
     results = App.clusterize_preview(pk_ids, kmeans_strategy, col_a, col_b)
     return Response(data={"results": results}, status=status.HTTP_200_OK)
 
 @api_view(["GET"])
 def clusterize_meanshift_preview(request, pk_ids, col_a, col_b):
-    kmeans_strategy = MeanShiftStrategy()
-    results = App.clusterize_preview(pk_ids, kmeans_strategy, col_a, col_b)
+    meanshift_strategy = MeanShiftStrategy()
+    results = App.clusterize_preview(pk_ids, meanshift_strategy, col_a, col_b)
     return Response(data={"results": results}, status=status.HTTP_200_OK)

@@ -1,5 +1,6 @@
 from django.shortcuts import get_object_or_404
 
+from core.model.configuration.ClusterConfiguration import ClusterConfiguration
 from core.model.files.IDataSource import IDataSource
 from core.model.files.LinkedFile import LinkedFile
 
@@ -44,8 +45,19 @@ class App:
         return dataset
 
     @staticmethod
-    def clusterize(name, description, ids, cluster_strategy, col_a, col_b, observations):
-        pass
+    def clusterize(name, description, ids_pk, cluster_strategy, col_a, col_b):
+        ids = App.get_ds(ids_pk)
+        conf = ClusterConfiguration()
+        conf.set_name(name)
+        conf.set_description(description)
+        conf.set_cols(col_a, col_b)
+        conf.set_strategy(cluster_strategy)
+        conf.set_ds(ids)
+
+        conf.save()
+
+        return conf
+
 
     @staticmethod
     def clusterize_preview(ids, cluster_strategy, col_a, col_b):
