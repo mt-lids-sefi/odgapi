@@ -2,7 +2,7 @@ from django.shortcuts import get_object_or_404
 
 from core.model.configuration.ClusterConfiguration import ClusterConfiguration
 from core.model.files.IDataSource import IDataSource
-from core.model.files.LinkedFile import LinkedFile
+from core.model.files.GeoLinkedFile import GeoLinkedFile
 
 
 class App:
@@ -11,7 +11,7 @@ class App:
     def get_files():
         return IDataSource.objects.all()
 
-    #TBA
+    #TBA para visualizaciones!
     def get_configurations(self):
         pass
 
@@ -24,7 +24,7 @@ class App:
     def link_files(pk_a, pk_b, link_strategy, name, description):
         ds_a = App.get_ds(pk_a)
         ds_b = App.get_ds(pk_b)
-        linked_file = LinkedFile()
+        linked_file = GeoLinkedFile()
         linked_file.set_lstrategy(link_strategy)
         linked_file.set_latlng_cols(ds_a.lat_col, ds_a.lon_col)
         linked_file.set_sources(ds_a, ds_b)

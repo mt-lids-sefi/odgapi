@@ -1,11 +1,11 @@
-from core.model.files.IDataSource import IDataSource
+from core.model.files.GeoDataSource import GeoDataSource
 from django.db import models
 from django.core.validators import FileExtensionValidator
 import pandas as pd
 import numpy as np
 
 
-class File (IDataSource):
+class GeoFile (GeoDataSource):
     doc = models.FileField(upload_to='files/', verbose_name='Archivo',
                            validators=[FileExtensionValidator(allowed_extensions=['csv'])])
     uploaded_at = models.DateTimeField(auto_now_add=True)

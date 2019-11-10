@@ -5,28 +5,49 @@ from rest_framework.parsers import FileUploadParser
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
+from api.serializers import DataFileSerializer
 from core.model.App import App
 from core.model.clusterizer.KMeansStrategy import KMeansStrategy
 from core.model.clusterizer.MeanShiftStrategy import MeanShiftStrategy
-from core.model.files.IDataSource import IDataSource
+from core.model.files.DataFile import DataFile
+from core.model.files.GeoDataSource import GeoDataSource
 from core.model.linker.ClosestPoint import ClosestPoint
 from core.model.linker.Polygon import Polygon
-from .serializers import FileSerializer, IDataSourceSerializer
+from .serializers import GeoFileSerializer, IDataSourceSerializer
 from django.shortcuts import get_object_or_404
 import json
 
 
 # This will return a list of files
 @api_view(["GET"])
-def file(request):
-    files = IDataSource.objects.all()
+def geo_files(request):
+    files = GeoDataSource.objects.all()
+    serializer = IDataSourceSerializer(files, many=True)
+    return JsonResponse(serializer.data, safe=False)
+
+
+# This will return a list of files
+@api_view(["GET"])
+def data_files(request):
+    files = DataFile.objects.all()
     serializer = IDataSourceSerializer(files, many=True)
     return JsonResponse(serializer.data, safe=False)
 
 
 @api_view(["GET"])
-def file_data(request, pk):
-    source = get_object_or_404(IDataSource, id=pk)
+def data_file(request, pk):
+    source = get_object_or_404(DataFile, id=pk)
+    d = source.get_data()
+    d = d.to_json(orient='index')
+    cols = source.get_cols()
+    return Response(
+        data={"rows": json.loads(d), "name": source.name,
+              "desc": source.description, "cols": cols}, status=status.HTTP_200_OK)
+
+
+@api_view(["GET"])
+def geo_file(request, pk):
+    source = get_object_or_404(GeoDataSource, id=pk)
     d = source.get_data()
     d = d.to_json(orient='index')
     cols = source.get_cols()
@@ -41,7 +62,22 @@ class FileUploadView(APIView):
 
     def post(self, request, *args, **kwargs):
 
-        file_serializer = FileSerializer(data=request.data, context={"request": request})
+        file_serializer = GeoFileSerializer(data=request.data, context={"request": request})
+
+        if file_serializer.is_valid():
+            file_serializer.save()
+            return Response(file_serializer.data, status=status.HTTP_201_CREATED)
+        else:
+            return Response(file_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+# save FILE endpoint.
+class DataFileUploadView(APIView):
+    parser_class = (FileUploadParser,)
+
+    def post(self, request, *args, **kwargs):
+
+        file_serializer = DataFileSerializer(data=request.data, context={"request": request})
 
         if file_serializer.is_valid():
             file_serializer.save()
