@@ -12,6 +12,6 @@ class MeanShiftStrategy(ClusterStrategy):
         df['c2'] = dataset[col_b]
         X = df[['c1', 'c2']].values
         clustering = MeanShift().fit(X)
-        print(clustering.labels_)
-        print(clustering.cluster_centers_)
-        pass
+        centroids = clustering.cluster_centers_
+        labels = clustering.labels_
+        return [centroids, labels]
