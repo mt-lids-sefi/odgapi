@@ -2,14 +2,16 @@ from django.db import models
 from picklefield import PickledObjectField
 
 from core.model.configuration.Configuration import Configuration
-from core.model.files.IDataSource import IDataSource
+from core.model.files.GeoDataSource import GeoDataSource
 
 
 class ClusterConfiguration(Configuration):
     cluster_strategy = PickledObjectField(null=True)
-    ds = models.ForeignKey(IDataSource, on_delete=models.CASCADE, related_name='+', null=True)
+    ds = models.ForeignKey(GeoDataSource, on_delete=models.CASCADE, related_name='+', null=True)
     col_a = models.CharField(max_length=50, null=True)
     col_b = models.CharField(max_length=50, null=True)
+    centroids = PickledObjectField(null=True)
+    labels = PickledObjectField(null=True)
 
     def __init__(self):
         pass
@@ -30,7 +32,9 @@ class ClusterConfiguration(Configuration):
         pass
 
     def clusterize(self):
-        return self.cluster_strategy.clusterize(self.ds, self.col_a, self.col_b)
+        results = self.cluster_strategy.clusterize(self.ds, self.col_a, self.col_b)
+        self.centroids = results[0]
+        self.labels = results[1]
 
 
 

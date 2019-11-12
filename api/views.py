@@ -88,12 +88,8 @@ class DataFileUploadView(APIView):
 
 @api_view(["GET"])
 def link_closest_point(request, pk_a, pk_b, name, description):
-    # create the strategy
     params = {'distance': 0, 'filter': False}
-    link_strategy = ClosestPoint(params)
-
-    # create & save the linkedfile
-    linked_file = App.link_files(pk_a, pk_b, link_strategy, name, description)
+    linked_file = App.link_closest_points(pk_a, pk_b,  name, description, params)
 
     # api specific
     data = linked_file.get_data().to_json(orient='index')
@@ -105,10 +101,7 @@ def link_closest_point(request, pk_a, pk_b, name, description):
 def link_closest_point_filter(request, pk_a, pk_b, max_distance, name, description):
     # create the strategy
     params = {'distance': max_distance, 'filter': True}
-    link_strategy = ClosestPoint(params)
-
-    # create & save the linkedfile
-    linked_file = App.link_files(pk_a, pk_b, link_strategy, name, description)
+    linked_file = App.link_closest_points(pk_a, pk_b, name, description, params)
 
     # api specific
     data = linked_file.get_data().to_json(orient='index')
@@ -120,10 +113,7 @@ def link_closest_point_filter(request, pk_a, pk_b, max_distance, name, descripti
 def link_polygon(request, pk_a, pk_b, max_distance, name, description):
     # create the strategy
     params = {'distance': max_distance}
-    link_strategy = Polygon(params)
-
-    # create & save the linkedfile
-    linked_file = App.link_files(pk_a, pk_b, link_strategy, name, description)
+    linked_file = App.link_polygon(pk_a, pk_b, name, description, params)
 
     # api specific
     data = linked_file.get_data().to_json(orient='index')
@@ -134,8 +124,9 @@ def link_polygon(request, pk_a, pk_b, max_distance, name, description):
 @api_view(["GET"])
 def link_closest_point_preview(request, pk_a, pk_b):
     params = {'distance': 0, 'filter': False}
-    link_strategy = ClosestPoint(params)
-    data_preview = App.link_files_preview(pk_a, pk_b, link_strategy)
+    data_preview = App.link_files_closest_point_preview(pk_a, pk_b, params)
+
+    # api specific
     cols = data_preview.columns.values
     data_preview = data_preview.to_json(orient='index')
     data = json.loads(data_preview)
@@ -145,8 +136,9 @@ def link_closest_point_preview(request, pk_a, pk_b):
 @api_view(["GET"])
 def link_closest_point_filter_preview(request, pk_a, pk_b, max_distance):
     params = {'distance': max_distance, 'filter': True}
-    link_strategy = ClosestPoint(params)
-    data_preview = App.link_files_preview(pk_a, pk_b, link_strategy)
+    data_preview = App.link_files_closest_point_preview(pk_a, pk_b, params)
+
+    # api specific
     cols = data_preview.columns.values
     data_preview = data_preview.to_json(orient='index')
     data = json.loads(data_preview)
@@ -156,8 +148,9 @@ def link_closest_point_filter_preview(request, pk_a, pk_b, max_distance):
 @api_view(["GET"])
 def link_polygon_preview(request, pk_a, pk_b, max_distance):
     params = {'distance': max_distance}
-    link_strategy = Polygon(params)
-    data_preview = App.link_files_preview(pk_a, pk_b, link_strategy)
+    data_preview = App.link_files_polygon_preview(pk_a, pk_b, params)
+
+    # api specific
     cols = data_preview.columns.values
     data_preview = data_preview.to_json(orient='index')
     data = json.loads(data_preview)
@@ -165,13 +158,16 @@ def link_polygon_preview(request, pk_a, pk_b, max_distance):
 
 @api_view(["GET"])
 def clusterize_kmeans_preview(request, pk_ids, col_a, col_b, k=3):
-    params = {'k': k}
-    kmeans_strategy = KMeansStrategy(params)
-    results = App.clusterize_preview(pk_ids, kmeans_strategy, col_a, col_b)
+    results = App.clusterize_kmeans_preview(pk_ids, col_a, col_b, k)
     return Response(data={"results": results}, status=status.HTTP_200_OK)
 
 @api_view(["GET"])
 def clusterize_meanshift_preview(request, pk_ids, col_a, col_b):
+    results = App.clusterize_meanshift_preview(pk_ids,  col_a, col_b)
+    return Response(data={"results": results}, status=status.HTTP_200_OK)
+
+@api_view(["GET"])
+def clusterize_meanshift(request, pk_ids, description, name, col_a, col_b):
     meanshift_strategy = MeanShiftStrategy()
-    results = App.clusterize_preview(pk_ids, meanshift_strategy, col_a, col_b)
+    results = App.clusterize(name, description, pk_ids, meanshift_strategy, col_a, col_b)
     return Response(data={"results": results}, status=status.HTTP_200_OK)

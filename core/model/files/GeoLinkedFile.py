@@ -6,7 +6,7 @@ from core.model.files.IDataSource import IDataSource
 
 
 class GeoLinkedFile(GeoDataSource):
-    source_a = models.ForeignKey(IDataSource, on_delete=models.CASCADE, related_name='+', null=True)
+    source_a = models.ForeignKey(GeoDataSource, on_delete=models.CASCADE, related_name='+', null=True)
     source_b = models.ForeignKey(IDataSource, on_delete=models.CASCADE, related_name='+', null=True)
     link_strategy = PickledObjectField(null=True)
 

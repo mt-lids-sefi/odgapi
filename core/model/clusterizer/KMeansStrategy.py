@@ -12,7 +12,7 @@ class KMeansStrategy(ClusterStrategy):
         else:
             self.set_k(3)
 
-#las columnas que se reciben ya están caterogizadas
+# las columnas que se reciben ya están caterogizadas
     def clusterize(self, ds, col_a, col_b):
         dataset = ds.get_data()
         df = DataFrame()
