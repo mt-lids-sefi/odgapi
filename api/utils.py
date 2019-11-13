@@ -35,3 +35,14 @@ def unroll(df1):
 
 def join_dfs(ids, df1, df2):
     return ids.join(df1, on='id1', rsuffix='_1').join(df2, on='id2', rsuffix='_2')
+
+
+# ids es un datasource
+def clean_df(ids):
+    df = ids.get_data()
+    lat_a = ids.get_lat_col()
+    lon_a = ids.get_lon_col()
+
+    df = df[np.isfinite(df[lat_a])]
+    df = df[np.isfinite(df[lon_a])]
+    return df

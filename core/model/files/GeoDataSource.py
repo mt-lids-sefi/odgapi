@@ -16,3 +16,9 @@ class GeoDataSource(IDataSource):
     def set_latlng_cols(self, lat, lon):
         self.lat_col = lat
         self.lon_col = lon
+
+    def get_lat_col(self):
+        return self.lat_col
+
+    def get_lon_col(self):
+        return self.lon_col
