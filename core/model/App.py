@@ -53,16 +53,18 @@ class App:
 
     @staticmethod
     def link_files_closest_point_preview(pk_a, pk_b, params):
+        link_strategy = ClosestPoint(params)
         ds_a = App.get_ds(pk_a)
         ds_b = App.get_ds(pk_b)
-        dataset = ClosestPoint.link_preview(ds_a, ds_b, params)
+        dataset = link_strategy.link(ds_a, ds_b)
         return dataset
 
     @staticmethod
     def link_files_polygon_preview(pk_a, pk_b, params):
+        link_strategy = Polygon(params)
         ds_a = App.get_ds(pk_a)
         ds_b = App.get_ds(pk_b)
-        dataset = Polygon.link_preview(ds_a, ds_b, params)
+        dataset = link_strategy.link(ds_a, ds_b)
         return dataset
 
     @staticmethod

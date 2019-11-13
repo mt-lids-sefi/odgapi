@@ -28,16 +28,3 @@ class ClosestPoint(LinkStrategy):
             return filtered
         else:
             return joined
-
-    @staticmethod
-    def link_preview(file_a, file_b, params):
-        filter = params['filter']
-        [file_a_df, file_b_df] = LinkStrategy.calculate_distances(file_a, file_b)
-        file_a_df['closest_point_index'] = [x.argmin() for x in file_a_df['distances']]
-        joined = file_a_df.join(file_b_df, on='closest_point_index', rsuffix='_b')
-        joined = joined.drop(columns=['distances', 'closest_point_index'])
-        if filter:
-            filtered = joined.query('closest_dist < ' + str(params['distance']))
-            return filtered
-        else:
-            return joined
