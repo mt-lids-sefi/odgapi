@@ -169,11 +169,11 @@ def clusterize_meanshift_preview(request, pk_ids, col_a, col_b):
     return Response(data={"results": results}, status=status.HTTP_200_OK)
 
 @api_view(["GET"])
-def clusterize_meanshift(request, pk_ids, description, name, col_a, col_b):
+def clusterize_meanshift(request, pk_ids, name, description, col_a, col_b):
     results = App.clusterize_meanshift(name, description, pk_ids,  col_a, col_b)
     return Response(data={"results": results}, status=status.HTTP_200_OK)
 
 @api_view(["GET"])
-def clusterize_kmeans(request, pk_ids, description, name, col_a, col_b, k=3):
+def clusterize_kmeans(request, pk_ids, name,  description, col_a, col_b, k=3):
     results = App.clusterize_kmeans(name, description, pk_ids, col_a, col_b, k)
     return Response(data={"results": results}, status=status.HTTP_200_OK)

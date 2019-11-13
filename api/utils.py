@@ -37,7 +37,7 @@ def join_dfs(ids, df1, df2):
     return ids.join(df1, on='id1', rsuffix='_1').join(df2, on='id2', rsuffix='_2')
 
 
-# ids es un datasource
+# ids es un geodatasource
 def clean_df(ids):
     df = ids.get_data()
     lat_a = ids.get_lat_col()
