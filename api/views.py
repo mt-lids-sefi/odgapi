@@ -5,14 +5,10 @@ from rest_framework.parsers import FileUploadParser
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from api.serializers import DataFileSerializer
+from api.serializers import DataFileSerializer, ConfigurationSerializer
 from core.model.App import App
-from core.model.clusterizer.KMeansStrategy import KMeansStrategy
-from core.model.clusterizer.MeanShiftStrategy import MeanShiftStrategy
 from core.model.files.DataFile import DataFile
 from core.model.files.GeoDataSource import GeoDataSource
-from core.model.linker.ClosestPoint import ClosestPoint
-from core.model.linker.Polygon import Polygon
 from .serializers import GeoFileSerializer, IDataSourceSerializer
 from django.shortcuts import get_object_or_404
 import json
@@ -21,15 +17,21 @@ import json
 # This will return a list of files
 @api_view(["GET"])
 def geo_files(request):
-    files = GeoDataSource.objects.all()
+    files = App.get_geo_files()
     serializer = IDataSourceSerializer(files, many=True)
     return JsonResponse(serializer.data, safe=False)
 
+# This will return a list of configurations
+@api_view(["GET"])
+def get_configurations(request):
+    confs = App.get_configurations()
+    serializer = ConfigurationSerializer(confs, many=True)
+    return JsonResponse(serializer.data, safe=False)
 
 # This will return a list of files
 @api_view(["GET"])
 def data_files(request):
-    files = DataFile.objects.all()
+    files = App.get_data_files()
     serializer = IDataSourceSerializer(files, many=True)
     return JsonResponse(serializer.data, safe=False)
 
@@ -168,6 +170,10 @@ def clusterize_meanshift_preview(request, pk_ids, col_a, col_b):
 
 @api_view(["GET"])
 def clusterize_meanshift(request, pk_ids, description, name, col_a, col_b):
-    meanshift_strategy = MeanShiftStrategy()
-    results = App.clusterize(name, description, pk_ids, meanshift_strategy, col_a, col_b)
+    results = App.clusterize_meanshift(name, description, pk_ids,  col_a, col_b)
+    return Response(data={"results": results}, status=status.HTTP_200_OK)
+
+@api_view(["GET"])
+def clusterize_kmeans(request, pk_ids, description, name, col_a, col_b, k=3):
+    results = App.clusterize_kmeans(name, description, pk_ids, col_a, col_b, k)
     return Response(data={"results": results}, status=status.HTTP_200_OK)

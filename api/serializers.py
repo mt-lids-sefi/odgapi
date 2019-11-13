@@ -1,5 +1,6 @@
 from rest_framework import serializers
 
+from core.model.configuration.Configuration import Configuration
 from core.model.files.DataFile import DataFile
 from core.model.files.GeoFile import GeoFile
 from core.model.files.GeoLinkedFile import GeoLinkedFile
@@ -36,3 +37,10 @@ class IDataSourceSerializer(serializers.Serializer):
     def to_representation(self, instance):
         serializer = self.get_serializer(instance.__class__)
         return serializer(instance, context=self.context).data
+
+
+class ConfigurationSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Configuration
+        fields = ['id', 'name', 'description']
+

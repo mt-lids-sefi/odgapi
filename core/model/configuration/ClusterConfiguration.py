@@ -26,8 +26,8 @@ class ClusterConfiguration(Configuration):
         self.col_a = col_a
         self.col_b = col_b
 
-#en este caso, el resultado de apply será el de aplicar el algoritmo elegido sobre el ds
-#guardado y devolver la info para mostrar los datos en el front
+# en este caso, el resultado de apply será el de aplicar el algoritmo elegido sobre el ds
+# guardado y devolver la info para mostrar los datos en el front
     def apply(self):
         pass
 

@@ -3,6 +3,9 @@ from django.shortcuts import get_object_or_404
 from core.model.clusterizer.KMeansStrategy import KMeansStrategy
 from core.model.clusterizer.MeanShiftStrategy import MeanShiftStrategy
 from core.model.configuration.ClusterConfiguration import ClusterConfiguration
+from core.model.configuration.Configuration import Configuration
+from core.model.files.DataFile import DataFile
+from core.model.files.GeoDataSource import GeoDataSource
 from core.model.files.IDataSource import IDataSource
 from core.model.files.GeoLinkedFile import GeoLinkedFile
 from core.model.linker.ClosestPoint import ClosestPoint
@@ -15,14 +18,30 @@ class App:
     def get_files():
         return IDataSource.objects.all()
 
-    #TBA para visualizaciones!
-    def get_configurations(self):
-        pass
+    @staticmethod
+    def get_geo_files():
+        return GeoDataSource.objects.all()
+
+    @staticmethod
+    def get_data_files():
+        return DataFile.objects.all()
+
+    @staticmethod
+    def get_configurations():
+        return Configuration.objects.all()
 
     '''return a datasource as object to be used'''
     @staticmethod
     def get_ds(pk):
         return get_object_or_404(IDataSource, id=pk)
+
+    @staticmethod
+    def get_data_file(pk):
+        return get_object_or_404(DataFile, id=pk)
+
+    @staticmethod
+    def get_geo_file(pk):
+        return get_object_or_404(GeoDataSource, id=pk)
 
     @staticmethod
     def save_linked_file(pk_a, pk_b, link_strategy, name, description):
@@ -68,13 +87,13 @@ class App:
         return dataset
 
     @staticmethod
-    def clusterize(name, description, ids_pk, cluster_strategy, col_a, col_b):
+    def save_cluster_configuration(name, description, ids_pk, col_a, col_b, cluster_startegy):
         ids = App.get_ds(ids_pk)
         conf = ClusterConfiguration()
         conf.set_name(name)
         conf.set_description(description)
         conf.set_cols(col_a, col_b)
-        conf.set_strategy(cluster_strategy)
+        conf.set_strategy(cluster_startegy)
         conf.set_ds(ids)
         conf.clusterize()
 
@@ -82,6 +101,18 @@ class App:
 
         return conf
 
+    @staticmethod
+    def clusterize_meanshift(name, description, ids_pk,  col_a, col_b):
+        meanshift_strategy = MeanShiftStrategy()
+        conf = App.save_cluster_configuration(name, description, ids_pk, col_a, col_b, meanshift_strategy)
+        return conf
+
+    @staticmethod
+    def clusterize_kmeans(name, description, ids_pk, col_a, col_b, k):
+        params = {'k': k}
+        kmeans_strategy = KMeansStrategy(params)
+        conf = App.save_cluster_configuration(name, description, ids_pk, col_a, col_b, kmeans_strategy)
+        return conf
 
     @staticmethod
     def clusterize_meanshift_preview(ids, col_a, col_b):
