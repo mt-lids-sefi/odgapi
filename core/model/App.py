@@ -8,6 +8,7 @@ from core.model.files.DataFile import DataFile
 from core.model.files.GeoDataSource import GeoDataSource
 from core.model.files.IDataSource import IDataSource
 from core.model.files.GeoLinkedFile import GeoLinkedFile
+from core.model.linker import Similarity
 from core.model.linker.ClosestPoint import ClosestPoint
 from core.model.linker.Polygon import Polygon
 
@@ -71,6 +72,12 @@ class App:
         return App.save_linked_file(pk_a, pk_b, link_strategy, name, description)
 
     @staticmethod
+    def link_similarity(pk_a, pk_b, name, description, params):
+        # falta armar las reglas
+        link_strategy = Similarity(params)
+        return App.save_linked_file(pk_a, pk_b, link_strategy, name, description)
+
+    @staticmethod
     def link_files_closest_point_preview(pk_a, pk_b, params):
         link_strategy = ClosestPoint(params)
         ds_a = App.get_ds(pk_a)
@@ -84,6 +91,13 @@ class App:
         ds_a = App.get_ds(pk_a)
         ds_b = App.get_ds(pk_b)
         dataset = link_strategy.link(ds_a, ds_b)
+        return dataset
+
+    @staticmethod
+    def link_files_similarity_preview(ids_a, ids_b, rules):
+        params = {'rules': rules}
+        link_strategy = Similarity(params)
+        dataset = link_strategy.link(ids_a, ids_b)
         return dataset
 
     @staticmethod
@@ -128,3 +142,5 @@ class App:
         source = App.get_ds(ids)
         results = kmeans_strategy.clusterize(source, col_a, col_b)
         return results
+
+

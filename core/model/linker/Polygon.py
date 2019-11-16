@@ -13,6 +13,7 @@ class Polygon(LinkStrategy):
     def set_distance(self, distance):
         self.distance = distance
 
+    #file_a y file_b son gds
     def link(self, file_a, file_b):
         [file_a_df, file_b_df] = LinkStrategy.calculate_distances(file_a, file_b)
         file_a_df['nearby_points'] = [utils.nearby_points(x, self.distance) for x in file_a_df['distances']]

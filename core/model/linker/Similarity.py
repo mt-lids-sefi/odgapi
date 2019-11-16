@@ -1,3 +1,4 @@
+from api import utils
 from core.model.linker.LinkStrategy import LinkStrategy
 
 
@@ -9,7 +10,20 @@ class Similarity(LinkStrategy):
         self.set_rules(self.params['rules'])
 
     def link(self, file_a, file_b):
-        pass
+        df_a = utils.clean_df(file_a)
+        df_b = utils.clean_df(file_b)
+        columns_left = []
+        columns_right = []
+        for rule in self.rules:
+            c_a = rule.get_column_a()
+            c_b = rule.get_column_b()
+            df_a[c_a + '_m'] = df_a[c_a]
+            columns_left.append(c_a + '_m')
+            columns_right.append(c_b)
+            for m in rule.get_matches():
+                df_a = df_a.replace({c_a + '_m': m})
+        merged = df_a.merge(df_b, left_on=columns_left, right_on=columns_right, suffixes=('_left', '_right'))
+        return merged
 
     def set_rules(self, rules):
         self.rules = rules
