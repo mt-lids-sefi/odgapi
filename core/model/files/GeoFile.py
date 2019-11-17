@@ -11,6 +11,7 @@ class GeoFile (GeoDataSource):
     uploaded_at = models.DateTimeField(auto_now_add=True)
 
     def save(self, *args, **kwargs):
+        #sep=';', encoding = "ISO-8859-1"
         dataset = pd.read_csv(self.doc, error_bad_lines=False)
         self.dataset = dataset
         self.clean_data()

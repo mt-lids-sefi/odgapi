@@ -21,12 +21,14 @@ def geo_files(request):
     serializer = IDataSourceSerializer(files, many=True)
     return JsonResponse(serializer.data, safe=False)
 
+
 # This will return a list of configurations
 @api_view(["GET"])
 def get_configurations(request):
     confs = App.get_configurations()
     serializer = ConfigurationSerializer(confs, many=True)
     return JsonResponse(serializer.data, safe=False)
+
 
 # This will return a list of files
 @api_view(["GET"])
@@ -126,54 +128,64 @@ def link_polygon(request, pk_a, pk_b, max_distance, name, description):
 @api_view(["GET"])
 def link_closest_point_preview(request, pk_a, pk_b):
     params = {'distance': 0, 'filter': False}
-    data_preview = App.link_files_closest_point_preview(pk_a, pk_b, params)
-
-    # api specific
-    cols = data_preview.columns.values
-    data_preview = data_preview.to_json(orient='index')
-    data = json.loads(data_preview)
+    results = App.link_files_closest_point_preview(pk_a, pk_b, params)
+    [data, cols] = App.make_response(results)
     return Response(data={"data": data, "cols": cols}, status=status.HTTP_200_OK)
 
 
 @api_view(["GET"])
 def link_closest_point_filter_preview(request, pk_a, pk_b, max_distance):
     params = {'distance': max_distance, 'filter': True}
-    data_preview = App.link_files_closest_point_preview(pk_a, pk_b, params)
-
-    # api specific
-    cols = data_preview.columns.values
-    data_preview = data_preview.to_json(orient='index')
-    data = json.loads(data_preview)
+    results = App.link_files_closest_point_preview(pk_a, pk_b, params)
+    [data, cols] = App.make_response(results)
     return Response(data={"data": data, "cols": cols}, status=status.HTTP_200_OK)
 
 
 @api_view(["GET"])
 def link_polygon_preview(request, pk_a, pk_b, max_distance):
     params = {'distance': max_distance}
-    data_preview = App.link_files_polygon_preview(pk_a, pk_b, params)
-
-    # api specific
-    cols = data_preview.columns.values
-    data_preview = data_preview.to_json(orient='index')
-    data = json.loads(data_preview)
+    results = App.link_files_polygon_preview(pk_a, pk_b, params)
+    [data, cols] = App.make_response(results)
     return Response(data={"data": data, "cols": cols}, status=status.HTTP_200_OK)
+
 
 @api_view(["GET"])
 def clusterize_kmeans_preview(request, pk_ids, col_a, col_b, k=3):
     results = App.clusterize_kmeans_preview(pk_ids, col_a, col_b, k)
     return Response(data={"results": results}, status=status.HTTP_200_OK)
 
+
 @api_view(["GET"])
 def clusterize_meanshift_preview(request, pk_ids, col_a, col_b):
     results = App.clusterize_meanshift_preview(pk_ids,  col_a, col_b)
     return Response(data={"results": results}, status=status.HTTP_200_OK)
+
 
 @api_view(["GET"])
 def clusterize_meanshift(request, pk_ids, name, description, col_a, col_b):
     results = App.clusterize_meanshift(name, description, pk_ids,  col_a, col_b)
     return Response(data={"results": results}, status=status.HTTP_200_OK)
 
+
 @api_view(["GET"])
 def clusterize_kmeans(request, pk_ids, name,  description, col_a, col_b, k=3):
     results = App.clusterize_kmeans(name, description, pk_ids, col_a, col_b, k)
     return Response(data={"results": results}, status=status.HTTP_200_OK)
+
+
+@api_view(["POST"])
+def link_similarity_preview(request, pk_a, pk_b):
+    rules = request.data['rules']
+    results = App.link_files_similarity_preview(pk_a, pk_b, {'rules': rules})
+    [data, cols] = App.make_response(results)
+    return Response(data={"data": data, "cols": cols}, status=status.HTTP_200_OK)
+
+
+@api_view(["POST"])
+def link_similarity(request, pk_a, pk_b, name, description):
+    rules = request.data['rules']
+    linked_file = App.link_similarity(pk_a, pk_b, name, description, {'rules': rules})
+
+    [data, cols] = App.make_response(linked_file.get_data())
+    return Response(data={"data": data, "id": linked_file.id, "cols": cols}, status=status.HTTP_200_OK)
+

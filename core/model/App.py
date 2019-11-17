@@ -1,5 +1,4 @@
 from django.shortcuts import get_object_or_404
-
 from core.model.clusterizer.KMeansStrategy import KMeansStrategy
 from core.model.clusterizer.MeanShiftStrategy import MeanShiftStrategy
 from core.model.configuration.ClusterConfiguration import ClusterConfiguration
@@ -8,10 +7,11 @@ from core.model.files.DataFile import DataFile
 from core.model.files.GeoDataSource import GeoDataSource
 from core.model.files.IDataSource import IDataSource
 from core.model.files.GeoLinkedFile import GeoLinkedFile
-from core.model.linker import Similarity
 from core.model.linker.ClosestPoint import ClosestPoint
 from core.model.linker.Polygon import Polygon
-
+from core.model.linker.Rule import Rule
+from core.model.linker.Similarity import Similarity
+import json
 
 class App:
 
@@ -73,8 +73,9 @@ class App:
 
     @staticmethod
     def link_similarity(pk_a, pk_b, name, description, params):
-        # falta armar las reglas
-        link_strategy = Similarity(params)
+        rules = App.make_rules(params)
+        prms = {'rules': rules}
+        link_strategy = Similarity(prms)
         return App.save_linked_file(pk_a, pk_b, link_strategy, name, description)
 
     @staticmethod
@@ -94,10 +95,13 @@ class App:
         return dataset
 
     @staticmethod
-    def link_files_similarity_preview(ids_a, ids_b, rules):
-        params = {'rules': rules}
-        link_strategy = Similarity(params)
-        dataset = link_strategy.link(ids_a, ids_b)
+    def link_files_similarity_preview(ids_a, ids_b, params):
+        rules = App.make_rules(params)
+        ds_a = App.get_ds(ids_a)
+        ds_b = App.get_ds(ids_b)
+        prms = {'rules': rules}
+        link_strategy = Similarity(prms)
+        dataset = link_strategy.link(ds_a, ds_b)
         return dataset
 
     @staticmethod
@@ -142,5 +146,25 @@ class App:
         source = App.get_ds(ids)
         results = kmeans_strategy.clusterize(source, col_a, col_b)
         return results
+
+    @staticmethod
+    def make_rules(json_rules):
+        rules = []
+        for r in json_rules['rules']:
+            matches = []
+            for m in r['matches']:
+                matches.append(m)
+            rule = Rule(r['col_a'], r['col_b'], matches)
+            rules.append(rule)
+        return rules
+
+    @staticmethod
+    def make_response(results):
+        # api specific
+        cols = results.columns.values
+        data_preview = results.to_json(orient='index')
+        data = json.loads(data_preview)
+        return [data, cols]
+
 
 

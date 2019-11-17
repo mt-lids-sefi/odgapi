@@ -5,6 +5,11 @@ class Rule:
     column_b = ''
     matches = []
 
+    def __init__(self, col_a, col_b, matches):
+        self.set_column_a(col_a)
+        self.set_column_b(col_b)
+        self.set_matches(matches)
+
     def set_column_a(self, col):
         self.column_a = col
 
@@ -26,3 +31,5 @@ class Rule:
     def get_matches(self):
         return self.matches
 
+    def to_string(self):
+        return "RULE: column a: "+self.column_a+", column b: "+self.column_b
