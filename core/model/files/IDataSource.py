@@ -28,3 +28,6 @@ class IDataSource(PolymorphicModel):
 
     def get_cols(self):
         return list(self.dataset.columns.values)
+
+    def get_id(self):
+        return self.id

@@ -160,7 +160,6 @@ class App:
 
     @staticmethod
     def make_response(results):
-        # api specific
         cols = results.columns.values
         data_preview = results.to_json(orient='index')
         data = json.loads(data_preview)

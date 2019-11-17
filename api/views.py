@@ -94,11 +94,8 @@ class DataFileUploadView(APIView):
 def link_closest_point(request, pk_a, pk_b, name, description):
     params = {'distance': 0, 'filter': False}
     linked_file = App.link_closest_points(pk_a, pk_b,  name, description, params)
-
-    # api specific
-    data = linked_file.get_data().to_json(orient='index')
-    data = json.loads(data)
-    return Response(data={"data": data}, status=status.HTTP_200_OK)
+    [data, cols] = App.make_response(linked_file.get_data())
+    return Response(data={"data": data, "id": linked_file.get_id(), "cols": cols}, status=status.HTTP_200_OK)
 
 
 @api_view(["GET"])
@@ -106,23 +103,16 @@ def link_closest_point_filter(request, pk_a, pk_b, max_distance, name, descripti
     # create the strategy
     params = {'distance': max_distance, 'filter': True}
     linked_file = App.link_closest_points(pk_a, pk_b, name, description, params)
-
-    # api specific
-    data = linked_file.get_data().to_json(orient='index')
-    data = json.loads(data)
-    return Response(data={"data": data, "id": linked_file.id}, status=status.HTTP_200_OK)
+    [data, cols] = App.make_response(linked_file.get_data())
+    return Response(data={"data": data, "id": linked_file.id, "cols": cols}, status=status.HTTP_200_OK)
 
 
 @api_view(["GET"])
 def link_polygon(request, pk_a, pk_b, max_distance, name, description):
-    # create the strategy
     params = {'distance': max_distance}
     linked_file = App.link_polygon(pk_a, pk_b, name, description, params)
-
-    # api specific
-    data = linked_file.get_data().to_json(orient='index')
-    data = json.loads(data)
-    return Response(data={"data": data, "id": linked_file.id}, status=status.HTTP_200_OK)
+    [data, cols] = App.make_response(linked_file.get_data())
+    return Response(data={"data": data, "id": linked_file.id, "cols": cols}, status=status.HTTP_200_OK)
 
 
 @api_view(["GET"])
@@ -185,7 +175,6 @@ def link_similarity_preview(request, pk_a, pk_b):
 def link_similarity(request, pk_a, pk_b, name, description):
     rules = request.data['rules']
     linked_file = App.link_similarity(pk_a, pk_b, name, description, {'rules': rules})
-
     [data, cols] = App.make_response(linked_file.get_data())
     return Response(data={"data": data, "id": linked_file.id, "cols": cols}, status=status.HTTP_200_OK)
 
