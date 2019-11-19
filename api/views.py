@@ -4,7 +4,6 @@ from rest_framework.decorators import api_view
 from rest_framework.parsers import FileUploadParser
 from rest_framework.response import Response
 from rest_framework.views import APIView
-
 from api.serializers import DataFileSerializer, ConfigurationSerializer
 from core.model.App import App
 from core.model.files.DataFile import DataFile
@@ -104,7 +103,7 @@ def link_closest_point_filter(request, pk_a, pk_b, max_distance, name, descripti
     params = {'distance': max_distance, 'filter': True}
     linked_file = App.link_closest_points(pk_a, pk_b, name, description, params)
     [data, cols] = App.make_response(linked_file.get_data())
-    return Response(data={"data": data, "id": linked_file.id, "cols": cols}, status=status.HTTP_200_OK)
+    return Response(data={"data": data, "id": linked_file.get_id(), "cols": cols}, status=status.HTTP_200_OK)
 
 
 @api_view(["GET"])
@@ -112,7 +111,7 @@ def link_polygon(request, pk_a, pk_b, max_distance, name, description):
     params = {'distance': max_distance}
     linked_file = App.link_polygon(pk_a, pk_b, name, description, params)
     [data, cols] = App.make_response(linked_file.get_data())
-    return Response(data={"data": data, "id": linked_file.id, "cols": cols}, status=status.HTTP_200_OK)
+    return Response(data={"data": data, "id": linked_file.get_id(), "cols": cols}, status=status.HTTP_200_OK)
 
 
 @api_view(["GET"])
@@ -176,5 +175,5 @@ def link_similarity(request, pk_a, pk_b, name, description):
     rules = request.data['rules']
     linked_file = App.link_similarity(pk_a, pk_b, name, description, {'rules': rules})
     [data, cols] = App.make_response(linked_file.get_data())
-    return Response(data={"data": data, "id": linked_file.id, "cols": cols}, status=status.HTTP_200_OK)
+    return Response(data={"data": data, "id": linked_file.get_id(), "cols": cols}, status=status.HTTP_200_OK)
 
