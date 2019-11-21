@@ -41,6 +41,7 @@ urlpatterns = [
     path("link_closest_point_filter_preview/<int:pk_a>/<int:pk_b>/<int:max_distance>", link_closest_point_filter_preview, name="link_closest_point_filter_preview"),
     path("link_polygon_preview/<int:pk_a>/<int:pk_b>/<int:max_distance>", link_polygon_preview, name="link_polygon_preview"),
     path("clusterize_kmeans_preview/<int:pk_ids>/<str:col_a>/<str:col_b>", clusterize_kmeans_preview, name="clusterize_kmeans_preview"),
+    path("clusterize_kmeans_preview/<int:pk_ids>/<str:col_a>/<str:col_b>/<int:k>", clusterize_kmeans_preview, name="clusterize_kmeans_preview"),
     path("clusterize_kmeans/<int:pk_ids>/<str:name>/<str:description>/<str:col_a>/<str:col_b>/<int:k>", clusterize_kmeans, name="clusterize_kmeans"),
     path("clusterize_meanshift/<int:pk_ids>/<str:name>/<str:description>/<str:col_a>/<str:col_b>", clusterize_meanshift, name="clusterize_meanshift"),
     path("clusterize_meanshift_preview/<int:pk_ids>/<str:col_a>/<str:col_b>", clusterize_meanshift_preview, name="clusterize_meanshift_preview")
