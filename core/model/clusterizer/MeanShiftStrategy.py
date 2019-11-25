@@ -5,6 +5,9 @@ from sklearn.cluster import MeanShift
 
 class MeanShiftStrategy(ClusterStrategy):
 
+    def __init__(self, params={}):
+        super().__init__(params)
+
     def clusterize(self, ds, col_a, col_b):
         dataset = ds.get_data()
         df = DataFrame()
