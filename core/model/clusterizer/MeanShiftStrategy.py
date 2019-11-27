@@ -1,3 +1,4 @@
+from core.model.clusterizer.Categorizer import Categorizer
 from core.model.clusterizer.ClusterStrategy import ClusterStrategy
 from pandas import DataFrame
 from sklearn.cluster import MeanShift
@@ -11,8 +12,8 @@ class MeanShiftStrategy(ClusterStrategy):
     def clusterize(self, ds, col_a, col_b):
         dataset = ds.get_data()
         df = DataFrame()
-        df['c1'] = dataset[col_a]
-        df['c2'] = dataset[col_b]
+        df['c1'] = Categorizer.categorize_column(dataset, col_a)
+        df['c2'] = Categorizer.categorize_column(dataset, col_b)
         X = df[['c1', 'c2']].values
         clustering = MeanShift().fit(X)
         centroids = clustering.cluster_centers_
