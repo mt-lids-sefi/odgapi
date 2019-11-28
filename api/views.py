@@ -141,12 +141,14 @@ def link_polygon_preview(request, pk_a, pk_b, max_distance):
 @api_view(["GET"])
 def clusterize_kmeans_preview(request, pk_ids, col_a, col_b, k=3):
     results = App.clusterize_kmeans_preview(pk_ids, col_a, col_b, k)
+    # SEPARAR RESULTS EN 3 Y TRABAJAR SOBRE EL DATASET PARA DEVOLVER JSON
     return Response(data={"results": results}, status=status.HTTP_200_OK)
 
 
 @api_view(["GET"])
 def clusterize_meanshift_preview(request, pk_ids, col_a, col_b):
     results = App.clusterize_meanshift_preview(pk_ids,  col_a, col_b)
+    # SEPARAR RESULTS EN 3 Y TRABAJAR SOBRE EL DATASET PARA DEVOLVER JSON
     return Response(data={"results": results}, status=status.HTTP_200_OK)
 
 

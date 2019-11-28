@@ -15,17 +15,19 @@ class KMeansStrategy(ClusterStrategy):
         else:
             self.set_k(3)
 
-# las columnas que se reciben ya están caterogizadas
+
     def clusterize(self, ds, col_a, col_b):
         dataset = ds.get_data()
         df = DataFrame()
         df['c1'] = Categorizer.categorize_column(dataset, col_a)
         df['c2'] = Categorizer.categorize_column(dataset, col_b)
         X = df[['c1', 'c2']].values
+        dataset[col_a + '_cat'] = df['c1']
+        dataset[col_b + '_cat'] = df['c2']
         kmeans = KMeans(n_clusters=self.k).fit(X)
         centroids = kmeans.cluster_centers_
         labels = kmeans.labels_
-        return [centroids, labels]
+        return [centroids, labels, dataset]
 
     def set_k(self, k):
         self.k = k

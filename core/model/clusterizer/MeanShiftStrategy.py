@@ -15,7 +15,9 @@ class MeanShiftStrategy(ClusterStrategy):
         df['c1'] = Categorizer.categorize_column(dataset, col_a)
         df['c2'] = Categorizer.categorize_column(dataset, col_b)
         X = df[['c1', 'c2']].values
+        dataset[col_a+'_cat'] = df['c1']
+        dataset[col_b+'_cat'] = df['c2']
         clustering = MeanShift().fit(X)
         centroids = clustering.cluster_centers_
         labels = clustering.labels_
-        return [centroids, labels]
+        return [centroids, labels, dataset]
