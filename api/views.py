@@ -93,7 +93,7 @@ class DataFileUploadView(APIView):
 def link_closest_point(request, pk_a, pk_b, name, description):
     params = {'distance': 0, 'filter': False}
     linked_file = App.link_closest_points(pk_a, pk_b,  name, description, params)
-    [data, cols] = App.make_response(linked_file.get_data())
+    [data, cols] = App.make_response_link(linked_file.get_data())
     return Response(data={"data": data, "id": linked_file.get_id(), "cols": cols}, status=status.HTTP_200_OK)
 
 
@@ -102,7 +102,7 @@ def link_closest_point_filter(request, pk_a, pk_b, max_distance, name, descripti
     # create the strategy
     params = {'distance': max_distance, 'filter': True}
     linked_file = App.link_closest_points(pk_a, pk_b, name, description, params)
-    [data, cols] = App.make_response(linked_file.get_data())
+    [data, cols] = App.make_response_link(linked_file.get_data())
     return Response(data={"data": data, "id": linked_file.get_id(), "cols": cols}, status=status.HTTP_200_OK)
 
 
@@ -110,7 +110,7 @@ def link_closest_point_filter(request, pk_a, pk_b, max_distance, name, descripti
 def link_polygon(request, pk_a, pk_b, max_distance, name, description):
     params = {'distance': max_distance}
     linked_file = App.link_polygon(pk_a, pk_b, name, description, params)
-    [data, cols] = App.make_response(linked_file.get_data())
+    [data, cols] = App.make_response_link(linked_file.get_data())
     return Response(data={"data": data, "id": linked_file.get_id(), "cols": cols}, status=status.HTTP_200_OK)
 
 
@@ -118,7 +118,7 @@ def link_polygon(request, pk_a, pk_b, max_distance, name, description):
 def link_closest_point_preview(request, pk_a, pk_b):
     params = {'distance': 0, 'filter': False}
     results = App.link_files_closest_point_preview(pk_a, pk_b, params)
-    [data, cols] = App.make_response(results)
+    [data, cols] = App.make_response_link(results)
     return Response(data={"data": data, "cols": cols}, status=status.HTTP_200_OK)
 
 
@@ -126,7 +126,7 @@ def link_closest_point_preview(request, pk_a, pk_b):
 def link_closest_point_filter_preview(request, pk_a, pk_b, max_distance):
     params = {'distance': max_distance, 'filter': True}
     results = App.link_files_closest_point_preview(pk_a, pk_b, params)
-    [data, cols] = App.make_response(results)
+    [data, cols] = App.make_response_link(results)
     return Response(data={"data": data, "cols": cols}, status=status.HTTP_200_OK)
 
 
@@ -134,22 +134,22 @@ def link_closest_point_filter_preview(request, pk_a, pk_b, max_distance):
 def link_polygon_preview(request, pk_a, pk_b, max_distance):
     params = {'distance': max_distance}
     results = App.link_files_polygon_preview(pk_a, pk_b, params)
-    [data, cols] = App.make_response(results)
+    [data, cols] = App.make_response_link(results)
     return Response(data={"data": data, "cols": cols}, status=status.HTTP_200_OK)
 
 
 @api_view(["GET"])
 def clusterize_kmeans_preview(request, pk_ids, col_a, col_b, k=3):
     results = App.clusterize_kmeans_preview(pk_ids, col_a, col_b, k)
-    # SEPARAR RESULTS EN 3 Y TRABAJAR SOBRE EL DATASET PARA DEVOLVER JSON
-    return Response(data={"results": results}, status=status.HTTP_200_OK)
+    [centroids, labels, data, cluster_size] = App.make_response_cluster(results)
+    return Response(data={"centroids": centroids, "labels": labels, "data": data, "cluster_size": cluster_size}, status=status.HTTP_200_OK)
 
 
 @api_view(["GET"])
 def clusterize_meanshift_preview(request, pk_ids, col_a, col_b):
     results = App.clusterize_meanshift_preview(pk_ids,  col_a, col_b)
-    # SEPARAR RESULTS EN 3 Y TRABAJAR SOBRE EL DATASET PARA DEVOLVER JSON
-    return Response(data={"results": results}, status=status.HTTP_200_OK)
+    [centroids, labels, data, cluster_size] = App.make_response_cluster(results)
+    return Response(data={"centroids": centroids, "labels": labels, "data": data, "cluster_size": cluster_size}, status=status.HTTP_200_OK)
 
 
 @api_view(["GET"])
@@ -168,7 +168,7 @@ def clusterize_kmeans(request, pk_ids, name,  description, col_a, col_b, k=3):
 def link_similarity_preview(request, pk_a, pk_b):
     rules = request.data['rules']
     results = App.link_files_similarity_preview(pk_a, pk_b, {'rules': rules})
-    [data, cols] = App.make_response(results)
+    [data, cols] = App.make_response_link(results)
     return Response(data={"data": data, "cols": cols}, status=status.HTTP_200_OK)
 
 
@@ -176,6 +176,6 @@ def link_similarity_preview(request, pk_a, pk_b):
 def link_similarity(request, pk_a, pk_b, name, description):
     rules = request.data['rules']
     linked_file = App.link_similarity(pk_a, pk_b, name, description, {'rules': rules})
-    [data, cols] = App.make_response(linked_file.get_data())
+    [data, cols] = App.make_response_link(linked_file.get_data())
     return Response(data={"data": data, "id": linked_file.get_id(), "cols": cols}, status=status.HTTP_200_OK)
 

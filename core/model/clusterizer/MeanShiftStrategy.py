@@ -20,4 +20,5 @@ class MeanShiftStrategy(ClusterStrategy):
         clustering = MeanShift().fit(X)
         centroids = clustering.cluster_centers_
         labels = clustering.labels_
+        dataset['cluster'] = labels
         return [centroids, labels, dataset]

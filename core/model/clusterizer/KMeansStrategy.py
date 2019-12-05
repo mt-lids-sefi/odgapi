@@ -27,6 +27,7 @@ class KMeansStrategy(ClusterStrategy):
         kmeans = KMeans(n_clusters=self.k).fit(X)
         centroids = kmeans.cluster_centers_
         labels = kmeans.labels_
+        dataset['cluster'] = labels
         return [centroids, labels, dataset]
 
     def set_k(self, k):

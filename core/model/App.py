@@ -159,11 +159,18 @@ class App:
         return rules
 
     @staticmethod
-    def make_response(results):
+    def make_response_link(results):
         cols = results.columns.values
         data_preview = results.to_json(orient='index')
         data = json.loads(data_preview)
         return [data, cols]
 
+    @staticmethod
+    def make_response_cluster(results):
+        [centroids, labels, dataset] = results
+        cluster_size = centroids.shape[0]
+        data = dataset.to_json(orient='index')
+        data = json.loads(data)
+        return [centroids, labels, data, cluster_size]
 
 
