@@ -21,4 +21,4 @@ odg/settings.pyc
 core/model/linker/__pycache__/*
 core/model/clusterizer/__pycache__/*
 core/model/configuration/__pycache__/*
-
+pyenv/
