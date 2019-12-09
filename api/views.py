@@ -56,7 +56,7 @@ def geo_file(request, pk):
     cols = source.get_cols()
     return Response(
         data={"rows": json.loads(d), "lat_col": source.lat_col, "lon_col": source.lon_col, "name": source.name,
-              "desc": source.description, "cols": cols}, status=status.HTTP_200_OK)
+              "desc": source.   description, "cols": cols}, status=status.HTTP_200_OK)
 
 
 # save FILE endpoint.
