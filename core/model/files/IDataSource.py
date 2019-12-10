@@ -26,8 +26,5 @@ class IDataSource(PolymorphicModel):
     def set_data(self, data):
         self.dataset = data
 
-    def get_cols(self):
-        return list(self.dataset.columns.values)
-
     def get_id(self):
         return self.id

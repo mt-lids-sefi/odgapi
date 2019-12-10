@@ -7,7 +7,7 @@ core/migrations/__pycache__/*
 odg/__pycache__/*
 .vscode/
 core/migrations/*
-media/*
+media/files/*
 db.sqlite3
 __pycache__/*
 venv/
