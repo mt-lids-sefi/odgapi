@@ -3,8 +3,11 @@ from django.test import TestCase
 import numpy as np
 
 # Create your tests here.
+from core.model.App import App
 from core.model.files.DataFile import DataFile
 from core.model.files.GeoFile import GeoFile
+from core.model.linker.ClosestPoint import ClosestPoint
+from core.model.linker.Polygon import Polygon
 
 
 class GeoFileTest(TestCase):
@@ -74,4 +77,25 @@ class GeoLinkedFileTest(TestCase):
     def tearDown(self):
         self.gf1.delete()
         self.gf2.delete()
+
+    def test_closest_point(self):
+        params = {'distance': 0, 'filter': False}
+        link_strategy = ClosestPoint(params)
+        ds_a = App.get_ds(self.gf1.get_id())
+        ds_b = App.get_ds(self.gf2.get_id())
+        dataset = link_strategy.link(ds_a, ds_b)
+        linked_file = App.link_closest_points(self.gf1.get_id(), self.gf2.get_id(), "name", "description", params)
+        dataset_linked = linked_file.get_data()
+        pd.testing.assert_frame_equal(dataset, dataset_linked)
+
+    def test_polygon(self):
+        params = {'distance': 3}
+        link_strategy = Polygon(params)
+        ds_a = App.get_ds(self.gf1.get_id())
+        ds_b = App.get_ds(self.gf2.get_id())
+        dataset = link_strategy.link(ds_a, ds_b)
+        linked_file = App.link_polygon(self.gf1.get_id(), self.gf2.get_id(), "name", "description", params)
+        dataset_linked = linked_file.get_data()
+        pd.testing.assert_frame_equal(dataset, dataset_linked)
+
 
