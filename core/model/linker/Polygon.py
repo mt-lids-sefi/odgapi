@@ -19,6 +19,8 @@ class Polygon(LinkStrategy):
         file_a_df['nearby_points'] = [utils.nearby_points(x, self.distance) for x in file_a_df['distances']]
         file_a_df['count'] = [len(x) for x in file_a_df['nearby_points']]
         unrolled = utils.unroll(file_a_df)
+        if unrolled.size == 0:
+            return unrolled
         joined = utils.join_dfs(unrolled, file_a_df, file_b_df)
         filtered = joined.query('closest_dist < ' + str(self.distance))
         filtered = filtered.drop(columns=['distances'])

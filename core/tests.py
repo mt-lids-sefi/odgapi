@@ -89,7 +89,7 @@ class GeoLinkedFileTest(TestCase):
         pd.testing.assert_frame_equal(dataset, dataset_linked)
 
     def test_polygon(self):
-        params = {'distance': 3}
+        params = {'distance': 3000}
         link_strategy = Polygon(params)
         ds_a = App.get_ds(self.gf1.get_id())
         ds_b = App.get_ds(self.gf2.get_id())
@@ -98,4 +98,65 @@ class GeoLinkedFileTest(TestCase):
         dataset_linked = linked_file.get_data()
         pd.testing.assert_frame_equal(dataset, dataset_linked)
 
+
+class PolygonTest(TestCase):
+
+    def setUp(self):
+        self.gf1 = GeoFile.objects.create(name='geofile test', description='description', lat_col='latitude', lon_col='longitude', doc='test_files/GeoVin_sample.csv')
+        self.gf2 = GeoFile.objects.create(name='dataunq test', description='description', lat_col='lat', lon_col='lon', doc='test_files/data_unq_sample.csv')
+
+    def tearDown(self):
+        self.gf1.delete()
+        self.gf2.delete()
+
+    def test_empty_polygon(self):
+        params = {'distance': 3}
+        link_strategy = Polygon(params)
+        ds_a = App.get_ds(self.gf1.get_id())
+        ds_b = App.get_ds(self.gf2.get_id())
+        dataset = link_strategy.link(ds_a, ds_b)
+        self.assertEqual(dataset.size, 0)
+
+    def test_polygon_lenght(self):
+        params = {'distance': 3000}
+        link_strategy = Polygon(params)
+        ds_a = App.get_ds(self.gf1.get_id())
+        ds_b = App.get_ds(self.gf2.get_id())
+        dataset = link_strategy.link(ds_a, ds_b)
+        self.assertEqual(len(dataset.index), 9)
+
+
+class ClosestPointTest(TestCase):
+
+    def setUp(self):
+        self.gf1 = GeoFile.objects.create(name='geofile test', description='description', lat_col='latitude', lon_col='longitude', doc='test_files/GeoVin_sample.csv')
+        self.gf2 = GeoFile.objects.create(name='dataunq test', description='description', lat_col='lat', lon_col='lon', doc='test_files/data_unq_sample.csv')
+
+    def tearDown(self):
+        self.gf1.delete()
+        self.gf2.delete()
+
+    def test_empty_closest_point(self):
+        params = {'filter': True, 'distance': 3}
+        link_strategy = ClosestPoint(params)
+        ds_a = App.get_ds(self.gf1.get_id())
+        ds_b = App.get_ds(self.gf2.get_id())
+        dataset = link_strategy.link(ds_a, ds_b)
+        self.assertEqual(dataset.size, 0)
+
+    def test_closest_point_lenght_filter(self):
+        params = {'filter': True, 'distance': 3000}
+        link_strategy = ClosestPoint(params)
+        ds_a = App.get_ds(self.gf1.get_id())
+        ds_b = App.get_ds(self.gf2.get_id())
+        dataset = link_strategy.link(ds_a, ds_b)
+        self.assertEqual(len(dataset.index), 3)
+
+    def test_closest_point_lenght_no_filter(self):
+        params = {'filter': False, 'distance': 0}
+        link_strategy = ClosestPoint(params)
+        ds_a = App.get_ds(self.gf1.get_id())
+        ds_b = App.get_ds(self.gf2.get_id())
+        dataset = link_strategy.link(ds_a, ds_b)
+        self.assertEqual(len(dataset.index), 3)
 
