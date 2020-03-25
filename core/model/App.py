@@ -168,7 +168,7 @@ class App:
     @staticmethod
     def make_response_cluster(results):
         [centroids, labels, dataset] = results
-        cluster_size = centroids.shape[0]
+        cluster_size = len(centroids)
         data = dataset.to_json(orient='index')
         data = json.loads(data)
         return [centroids, labels, data, cluster_size]

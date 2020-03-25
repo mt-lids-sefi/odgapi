@@ -4,6 +4,8 @@ import numpy as np
 
 # Create your tests here.
 from core.model.App import App
+from core.model.clusterizer.Categorizer import Categorizer
+from core.model.clusterizer.MeanShiftStrategy import MeanShiftStrategy
 from core.model.files.DataFile import DataFile
 from core.model.files.GeoFile import GeoFile
 from core.model.linker.ClosestPoint import ClosestPoint
@@ -160,3 +162,24 @@ class ClosestPointTest(TestCase):
         dataset = link_strategy.link(ds_a, ds_b)
         self.assertEqual(len(dataset.index), 3)
 
+class CategorizerTest(TestCase):
+    def setUp(self):
+        self.gf2 = GeoFile.objects.create(name='dataunq test', description='description', lat_col='lat', lon_col='lon', doc='test_files/data_unq_sample.csv')
+
+    def tearDown(self):
+        self.gf2.delete()
+
+    def test_categorize_column_long(self):
+        dataset = App.get_ds(self.gf2.get_id()).get_data()
+        cat_col = Categorizer.categorize_column(dataset, 'p1')
+        uncat_col = dataset[['p1']]
+        self.assertEqual(len(cat_col), len(uncat_col))
+
+    def test_categorize_uncategorize_values(self):
+        dataset = App.get_ds(self.gf2.get_id()).get_data()
+        cat_col = Categorizer.categorize_column(dataset, 'p1')
+        dataset['p1_cat'] = cat_col
+        cat_value = dataset.iloc[0]['p1_cat']
+        real_value = dataset.iloc[0]['p1']
+        uncat_value = Categorizer.uncategorize_value(dataset, 'p1', cat_value)
+        self.assertEqual(real_value, uncat_value)
