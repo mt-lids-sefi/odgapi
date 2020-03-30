@@ -18,8 +18,7 @@ class KMeansStrategy(ClusterStrategy):
         centroids = kmeans.cluster_centers_
         labels = kmeans.labels_
         dataset['cluster'] = labels
-        uncat_centroids = Categorizer.uncategorize_centroids(centroids, dataset, col_x, col_y)
-        return [uncat_centroids, labels, dataset]
+        return [centroids, labels, dataset]
 
     def set_k(self, k):
         self.k = k

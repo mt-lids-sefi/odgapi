@@ -14,5 +14,4 @@ class MeanShiftStrategy(ClusterStrategy):
         centroids = clustering.cluster_centers_
         labels = clustering.labels_
         dataset['cluster'] = labels
-        uncat_centroids = Categorizer.uncategorize_centroids(centroids, dataset, col_x, col_y)
-        return [uncat_centroids, labels, dataset]
+        return [centroids, labels, dataset]

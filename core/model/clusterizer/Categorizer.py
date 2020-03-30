@@ -27,8 +27,12 @@ class Categorizer:
 
     @staticmethod
     def uncategorize_centroid(centroid, dataset, col_x, col_y):
-        vx = Categorizer.uncategorize_value(dataset, col_x, centroid[0])
-        vy = Categorizer.uncategorize_value(dataset, col_y, centroid[1])
+        if (dataset.dtypes[col_x] == 'object'):
+            vx = centroid[0]
+        else: vx = Categorizer.uncategorize_value(dataset, col_x, centroid[0])
+        if (dataset.dtypes[col_y] == 'object'):
+            vy = Categorizer.uncategorize_value(dataset, col_y, centroid[1])
+        else: vy = centroid[1]
         return [vx, vy]
 
     @staticmethod
