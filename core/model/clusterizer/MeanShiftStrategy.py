@@ -1,6 +1,4 @@
 from sklearn.cluster import MeanShift
-
-from core.model.clusterizer.Categorizer import Categorizer
 from core.model.clusterizer.ClusterStrategy import ClusterStrategy
 
 

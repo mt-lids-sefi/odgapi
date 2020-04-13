@@ -1,4 +1,6 @@
+from pandas import DataFrame
 from sklearn import preprocessing
+import json
 
 class Categorizer:
 
@@ -42,3 +44,17 @@ class Categorizer:
             uncat_centroid = Categorizer.uncategorize_centroid(c, dataset, col_x, col_y)
             uncat_centroids.append(uncat_centroid)
         return uncat_centroids
+
+    @staticmethod
+    def get_cats_n_labels(dataset, col):
+        le = preprocessing.LabelEncoder()
+        le.fit(dataset[col])
+        cl = le.classes_
+        trans = le.transform(cl)
+        dfc = DataFrame({
+            "original": cl,
+            "categorized": trans
+        })
+        data = dfc.to_json(orient='index')
+        data = json.loads(data)
+        return data

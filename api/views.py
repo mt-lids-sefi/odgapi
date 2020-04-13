@@ -141,15 +141,15 @@ def link_polygon_preview(request, pk_a, pk_b, max_distance):
 @api_view(["GET"])
 def clusterize_kmeans_preview(request, pk_ids, col_a, col_b, k=3):
     results = App.clusterize_kmeans_preview(pk_ids, col_a, col_b, k)
-    [centroids, labels, data, cluster_size] = App.make_response_cluster(results)
-    return Response(data={"centroids": centroids, "labels": labels, "data": data, "cluster_size": cluster_size}, status=status.HTTP_200_OK)
+    [centroids, labels, data, cluster_size, cats] = App.make_response_cluster(results)
+    return Response(data={"centroids": centroids, "labels": labels, "data": data, "cluster_size": cluster_size, "cats": cats}, status=status.HTTP_200_OK)
 
 
 @api_view(["GET"])
 def clusterize_meanshift_preview(request, pk_ids, col_a, col_b):
     results = App.clusterize_meanshift_preview(pk_ids,  col_a, col_b)
-    [centroids, labels, data, cluster_size] = App.make_response_cluster(results)
-    return Response(data={"centroids": centroids, "labels": labels, "data": data, "cluster_size": cluster_size}, status=status.HTTP_200_OK)
+    [centroids, labels, data, cluster_size, cats] = App.make_response_cluster(results)
+    return Response(data={"centroids": centroids, "labels": labels, "data": data, "cluster_size": cluster_size, "cats": cats}, status=status.HTTP_200_OK)
 
 
 @api_view(["GET"])
