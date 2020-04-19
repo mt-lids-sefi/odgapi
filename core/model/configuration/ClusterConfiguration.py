@@ -13,9 +13,6 @@ class ClusterConfiguration(Configuration):
     centroids = PickledObjectField(null=True)
     labels = PickledObjectField(null=True)
 
-    def __init__(self):
-        pass
-
     def set_strategy(self, strategy):
         self.cluster_strategy = strategy
 

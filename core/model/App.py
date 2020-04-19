@@ -1,6 +1,7 @@
 from django.shortcuts import get_object_or_404
 from core.model.clusterizer.KMeansStrategy import KMeansStrategy
 from core.model.clusterizer.MeanShiftStrategy import MeanShiftStrategy
+from core.model.configuration.LayersConfiguration import LayersConfiguration
 from core.model.configuration.ClusterConfiguration import ClusterConfiguration
 from core.model.configuration.Configuration import Configuration
 from core.model.files.DataFile import DataFile
@@ -172,5 +173,13 @@ class App:
         data = dataset.to_json(orient='index')
         data = json.loads(data)
         return [centroids, labels, data, cluster_size, cats]
+
+    @staticmethod
+    def save_layers_configuration(pk_a, pk_b, popup_data, colours, name, description):
+        id_a = App.get_ds(pk_a)
+        id_b = App.get_ds(pk_b)
+        conf = LayersConfiguration(name, description, id_a, id_b, popup_data,colours)
+        conf.save()
+        pass
 
 

@@ -7,9 +7,6 @@ class Configuration(PolymorphicModel):
     name = models.CharField(max_length=128, blank=True, verbose_name='Nombre')
     created_at = models.DateTimeField(auto_now_add=True)
 
-    def __init__(self):
-        pass
-
     def set_description(self, desc):
         self.description = desc
 

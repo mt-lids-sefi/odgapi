@@ -155,13 +155,13 @@ def clusterize_meanshift_preview(request, pk_ids, col_a, col_b):
 @api_view(["GET"])
 def clusterize_meanshift(request, pk_ids, name, description, col_a, col_b):
     results = App.clusterize_meanshift(name, description, pk_ids,  col_a, col_b)
-    return Response(data={"results": results}, status=status.HTTP_200_OK)
+    return Response(data={"results":"OK"}, status=status.HTTP_200_OK)
 
 
 @api_view(["GET"])
 def clusterize_kmeans(request, pk_ids, name,  description, col_a, col_b, k=3):
     results = App.clusterize_kmeans(name, description, pk_ids, col_a, col_b, k)
-    return Response(data={"results": results}, status=status.HTTP_200_OK)
+    return Response(data={"results": "OK"}, status=status.HTTP_200_OK)
 
 
 @api_view(["POST"])
@@ -179,3 +179,11 @@ def link_similarity(request, pk_a, pk_b, name, description):
     [data, cols] = App.make_response_link(linked_file.get_data())
     return Response(data={"data": data, "id": linked_file.get_id(), "cols": cols}, status=status.HTTP_200_OK)
 
+@api_view(["POST"])
+def layers_configuration(request, pk_a, pk_b):
+    popup_data = request.data['popup_data']
+    colours = request.data['colours']
+    name = request.data['name']
+    description = request.data['description']
+    App.save_layers_configuration(pk_a, pk_b, popup_data, colours, name, description)
+    return Response(data={"result":"ok"}, status=status.HTTP_200_OK)

@@ -12,5 +12,19 @@ class LayersConfiguration(Configuration):
     popup_data = PickledObjectField(null=True)
     colours = PickledObjectField(null=True)
 
+
+    def __init__(self, name, description, pk_a, pk_b, popup, colours):
+        super().__init__()
+        self.ds_a = pk_a
+        self.ds_b = pk_b
+        self.set_colours(colours)
+        self.set_popup_data(popup)
+        self.set_name(name)
+        self.set_description(description)
+
     def set_colours(self, colours):
         self.colours = colours
+
+    def set_popup_data(self, popup_data):
+        self.popup_data = popup_data
+
