@@ -170,9 +170,10 @@ class App:
     def make_response_cluster(results):
         [centroids, labels, dataset, cats] = results
         cluster_size = len(centroids)
+        cols = dataset.columns.values
         data = dataset.to_json(orient='index')
         data = json.loads(data)
-        return [centroids, labels, data, cluster_size, cats]
+        return [centroids, labels, data, cluster_size, cats, cols]
 
     @staticmethod
     def save_layers_configuration(pk_a, pk_b, popup_data, colours, name, description):
