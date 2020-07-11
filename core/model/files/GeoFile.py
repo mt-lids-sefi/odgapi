@@ -31,3 +31,8 @@ class GeoFile (GeoDataSource):
         df[lat] = df[lat].fillna(-0.99999)
         df[lat] = pd.to_numeric(df[lat])
         self.dataset = df
+
+    def get_details(self):
+        geo_details = {'doc': self.doc.name, 'uploaded_at': self.uploaded_at.ctime()}
+        geo_details.update(super().get_details())
+        return geo_details

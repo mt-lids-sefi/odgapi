@@ -28,3 +28,9 @@ class ClosestPoint(LinkStrategy):
             return filtered
         else:
             return joined
+
+    def get_details(self):
+        if self.filter:
+            return {'distance': self.distance*1000, 'link_strategy': 'Closest Point'}
+        else:
+            return {'link_strategy': 'Closest Point'}

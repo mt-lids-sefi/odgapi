@@ -27,3 +27,6 @@ class Similarity(LinkStrategy):
 
     def set_rules(self, rules):
         self.rules = rules
+
+    def get_details(self):
+        return {'RULES_DETAILS': "TBD"}

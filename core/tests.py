@@ -43,6 +43,14 @@ class GeoFileTest(TestCase):
         cols = list(df.columns.values)
         self.assertEqual(self.gf.get_cols(), cols)
 
+    def test_get_details(self):
+        ds_a = App.get_ds(self.gf.get_id())
+        details = ds_a.get_details()
+        self.assertEqual(details['name'], 'geofile test')
+        self.assertEqual(details['description'], 'description')
+        self.assertEqual(details['doc'], 'test_files/GeoVin_sample.csv')
+
+
 
 class DataFileTest(TestCase):
 
@@ -99,6 +107,7 @@ class GeoLinkedFileTest(TestCase):
         linked_file = App.link_polygon(self.gf1.get_id(), self.gf2.get_id(), "name", "description", params)
         dataset_linked = linked_file.get_data()
         pd.testing.assert_frame_equal(dataset, dataset_linked)
+
 
 
 class PolygonTest(TestCase):
@@ -183,3 +192,9 @@ class CategorizerTest(TestCase):
         real_value = dataset.iloc[0]['p1']
         uncat_value = Categorizer.uncategorize_value(dataset, 'p1', cat_value)
         self.assertEqual(real_value, uncat_value)
+
+class UtilsTest(TestCase):
+    def setUp(self):
+        self.gf1 = GeoFile.objects.create(name='geofile test', description='description', lat_col='latitude',lon_col='longitude', doc='test_files/GeoVin_sample.csv')
+        self.gf2 = GeoFile.objects.create(name='dataunq test', description='description', lat_col='lat', lon_col='lon', doc='test_files/data_unq_sample.csv')
+

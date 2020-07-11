@@ -16,3 +16,7 @@ class DataFile(IDataSource):
     def set_doc(self, doc):
         self.doc = doc
 
+    def get_details(self):
+        details = {'doc': self.doc.name, 'uploaded_at': self.uploaded_at.ctime()}
+        details.update(super().get_details())
+        return details

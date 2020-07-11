@@ -25,3 +25,6 @@ class Polygon(LinkStrategy):
         filtered = joined.query('closest_dist < ' + str(self.distance))
         filtered = filtered.drop(columns=['distances'])
         return filtered
+
+    def get_details(self):
+        return {"distance": self.distance*1000, 'link_strategy': 'Polygon'}

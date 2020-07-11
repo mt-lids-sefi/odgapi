@@ -183,4 +183,8 @@ class App:
         conf.save()
         pass
 
-
+    @staticmethod
+    def get_details(pk_ids):
+        ds = App.get_ds(pk_ids)
+        details = ds.get_details()
+        return details

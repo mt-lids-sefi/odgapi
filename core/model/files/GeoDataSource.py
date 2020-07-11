@@ -22,3 +22,8 @@ class GeoDataSource(IDataSource):
 
     def get_lon_col(self):
         return self.lon_col
+
+    def get_details(self):
+        geo_details = {'lat_col': self.lat_col, 'lon_col': self.lon_col}
+        geo_details.update(super().get_details())
+        return geo_details

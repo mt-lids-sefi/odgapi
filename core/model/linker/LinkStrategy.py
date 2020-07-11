@@ -30,3 +30,7 @@ class LinkStrategy:
         file_a_df['closest_point'] = [file_b_df.iloc[x.argmin()]['pointB'] for x in file_a_df['distances']]
         file_a_df['closest_dist'] = [min(x) for x in file_a_df['distances']]
         return [file_a_df, file_b_df]
+
+
+    def get_details(self):
+        pass

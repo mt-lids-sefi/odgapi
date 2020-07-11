@@ -28,3 +28,6 @@ class IDataSource(PolymorphicModel):
 
     def get_id(self):
         return self.id
+
+    def get_details(self):
+        return {'name': self.name, 'description': self.description}

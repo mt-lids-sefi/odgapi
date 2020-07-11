@@ -100,7 +100,7 @@ def link_closest_point(request, pk_a, pk_b, name, description):
 @api_view(["GET"])
 def link_closest_point_filter(request, pk_a, pk_b, max_distance, name, description):
     # create the strategy
-    params = {'distance': max_distance, 'filter': True}
+    params = {'distance': max_distance/1000, 'filter': True}
     linked_file = App.link_closest_points(pk_a, pk_b, name, description, params)
     [data, cols] = App.make_response_link(linked_file.get_data())
     return Response(data={"data": data, "id": linked_file.get_id(), "cols": cols}, status=status.HTTP_200_OK)
@@ -108,7 +108,7 @@ def link_closest_point_filter(request, pk_a, pk_b, max_distance, name, descripti
 
 @api_view(["GET"])
 def link_polygon(request, pk_a, pk_b, max_distance, name, description):
-    params = {'distance': max_distance}
+    params = {'distance': max_distance/1000}
     linked_file = App.link_polygon(pk_a, pk_b, name, description, params)
     [data, cols] = App.make_response_link(linked_file.get_data())
     return Response(data={"data": data, "id": linked_file.get_id(), "cols": cols}, status=status.HTTP_200_OK)
@@ -124,7 +124,7 @@ def link_closest_point_preview(request, pk_a, pk_b):
 
 @api_view(["GET"])
 def link_closest_point_filter_preview(request, pk_a, pk_b, max_distance):
-    params = {'distance': max_distance, 'filter': True}
+    params = {'distance': max_distance/1000, 'filter': True}
     results = App.link_files_closest_point_preview(pk_a, pk_b, params)
     [data, cols] = App.make_response_link(results)
     return Response(data={"data": data, "cols": cols}, status=status.HTTP_200_OK)
@@ -132,7 +132,7 @@ def link_closest_point_filter_preview(request, pk_a, pk_b, max_distance):
 
 @api_view(["GET"])
 def link_polygon_preview(request, pk_a, pk_b, max_distance):
-    params = {'distance': max_distance}
+    params = {'distance': max_distance/1000}
     results = App.link_files_polygon_preview(pk_a, pk_b, params)
     [data, cols] = App.make_response_link(results)
     return Response(data={"data": data, "cols": cols}, status=status.HTTP_200_OK)
@@ -187,3 +187,8 @@ def layers_configuration(request, pk_a, pk_b):
     description = request.data['description']
     App.save_layers_configuration(pk_a, pk_b, popup_data, colours, name, description)
     return Response(data={"result":"ok"}, status=status.HTTP_200_OK)
+
+@api_view(["GET"])
+def get_ds_details(request, pk_ids):
+    details = App.get_details(pk_ids)
+    return Response(data={"details": details}, status=status.HTTP_200_OK)

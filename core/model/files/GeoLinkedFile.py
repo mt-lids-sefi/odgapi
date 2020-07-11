@@ -22,3 +22,9 @@ class GeoLinkedFile(GeoDataSource):
 
     def link(self):
         self.dataset = self.link_strategy.link(self.source_a, self.source_b)
+
+    def get_details(self):
+        geo_linked_details = {'source_a': self.source_a.get_name(), 'source_b': self.source_b.get_name()}
+        geo_linked_details.update(super().get_details())
+        geo_linked_details.update(self.link_strategy.get_details())
+        return geo_linked_details
