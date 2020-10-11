@@ -30,6 +30,7 @@ class GeoFile (GeoDataSource):
         df[lat] = df[lat].replace(r'^$', np.nan, regex=True)
         df[lat] = df[lat].fillna(-0.99999)
         df[lat] = pd.to_numeric(df[lat])
+        df.columns = df.columns.str.replace(".", "_")
         self.dataset = df
 
     def get_details(self):

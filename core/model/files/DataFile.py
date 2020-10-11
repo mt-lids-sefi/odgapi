@@ -11,6 +11,7 @@ class DataFile(IDataSource):
     def save(self, *args, **kwargs):
         dataset = pd.read_csv(self.doc, error_bad_lines=False)
         self.dataset = dataset
+        self.clean_data()
         super().save(*args, **kwargs)  # Call the "real" save() method.
 
     def set_doc(self, doc):
@@ -20,3 +21,8 @@ class DataFile(IDataSource):
         details = {'doc': self.doc.name, 'uploaded_at': self.uploaded_at.ctime()}
         details.update(super().get_details())
         return details
+
+    def clean_data(self):
+        df = self.dataset
+        df.columns = df.columns.str.replace(".", "_")
+        self.dataset = df
