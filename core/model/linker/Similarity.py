@@ -21,7 +21,7 @@ class Similarity(LinkStrategy):
             columns_left.append(c_a + '_m')
             columns_right.append(c_b)
             for m in rule.get_matches():
-                df_a = df_a.replace({c_a + '_m': m})
+                df_a = df_a.replace({c_a + '_m': m}) # reemplaza valores en df_a para que sean iguales a como son en df_b. el merge es automático después
         merged = df_a.merge(df_b, left_on=columns_left, right_on=columns_right, suffixes=('_left', '_right'))
         return merged
 
