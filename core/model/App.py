@@ -98,6 +98,7 @@ class App:
     @staticmethod
     def link_files_similarity_preview(ids_a, ids_b, params):
         rules = App.make_rules(params)
+        print(params)
         ds_a = App.get_ds(ids_a)
         ds_b = App.get_ds(ids_b)
         prms = {'rules': rules}
@@ -154,7 +155,8 @@ class App:
         for r in json_rules['rules']:
             matches = []
             for m in r['matches']:
-                matches.append(m)
+                match = {m['a']: m['b']}
+                matches.append(match)
             rule = Rule(r['col_a'], r['col_b'], matches)
             rules.append(rule)
         return rules

@@ -46,3 +46,4 @@ def clean_df(ids):
     df = df[np.isfinite(df[lat_a])]
     df = df[np.isfinite(df[lon_a])]
     return df
+

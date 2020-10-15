@@ -33,3 +33,6 @@ class Rule:
 
     def to_string(self):
         return "RULE: column a: "+self.column_a+", column b: "+self.column_b
+
+    def has_columns(self, col_a, col_b):
+        return self.column_a == col_a & self.column_b == col_b
