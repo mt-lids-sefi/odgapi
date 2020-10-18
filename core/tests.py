@@ -10,6 +10,8 @@ from core.model.files.DataFile import DataFile
 from core.model.files.GeoFile import GeoFile
 from core.model.linker.ClosestPoint import ClosestPoint
 from core.model.linker.Polygon import Polygon
+from core.model.linker.Rule import Rule
+from core.model.linker.Similarity import Similarity
 
 
 class GeoFileTest(TestCase):
@@ -198,3 +200,22 @@ class UtilsTest(TestCase):
         self.gf1 = GeoFile.objects.create(name='geofile test', description='description', lat_col='latitude',lon_col='longitude', doc='test_files/GeoVin_sample.csv')
         self.gf2 = GeoFile.objects.create(name='dataunq test', description='description', lat_col='lat', lon_col='lon', doc='test_files/data_unq_sample.csv')
 
+class SimilarityTest(TestCase):
+
+    def setUp(self):
+        self.gf1 = GeoFile.objects.create(name='geofile test', description='description', lat_col='latitude',
+                                          lon_col='longitude', doc='test_files/GeoVin_sample-2.csv')
+        self.gf2 = GeoFile.objects.create(name='pba test', description='description', lat_col='y', lon_col='x',
+                                          doc='test_files/establecimientos-salud-publicos_sample.csv')
+
+    def test_link(self):
+        r_1 = Rule('JURISDICCI', 'verificado', [{"PROV": "Verificado"}])
+        r_2 = Rule('JURISDICCI', 'valorVinchuca', [{"PROV": "patagonica"}])
+        rules = [r_1, r_2]
+        params = {'rules': rules}
+        link_strategy = Similarity(params)
+        ds_a = App.get_ds(self.gf1.get_id())
+        ds_b = App.get_ds(self.gf2.get_id())
+        dataset = link_strategy.link(ds_b, ds_a)
+        print(dataset)
+        self.assertTrue(len(dataset.index) == 1)
