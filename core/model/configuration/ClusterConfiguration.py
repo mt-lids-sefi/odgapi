@@ -48,8 +48,11 @@ class ClusterConfiguration(Configuration):
 
     def clusterize(self):
         results = self.cluster_strategy.clusterize(self.ds, self.col_a, self.col_b)
-        self.centroids = results[0]
-        self.labels = results[1]
+        return results
+        # self.centroids = results[0]
+        # self.labels = results[1]
+        # self.clusterized = results[2]
+        # self.cats = results[3]
 
 
 

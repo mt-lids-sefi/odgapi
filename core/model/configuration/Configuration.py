@@ -13,5 +13,11 @@ class Configuration(PolymorphicModel):
     def set_name(self, name):
         self.name = name
 
+    def get_name(self):
+        return self.name
+
+    def get_description(self):
+        return self.description
+
     def apply(self):
         pass

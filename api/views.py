@@ -210,8 +210,9 @@ def get_clusterizations(request):
 
 @api_view(["GET"])
 def get_clusterization(request, pk_conf):
-    [col_a, col_b, cols, data, strategy, labels, centroids] = App.get_cluster_configuration(pk_conf)
-    return Response(data={"col_a": col_a, "col_b": col_b, "data": data,
-                          "strategy": strategy, "cols": cols,
-                          "centroids": centroids, "labels": labels},
+    [name, description, col_a, col_b, cols, data, strategy,
+                    labels, centroids, lat_col, lon_col, cats] = App.get_cluster_configuration(pk_conf)
+    return Response(data={"name": name, "description": description,  "col_a": col_a, "col_b": col_b, "data": data,
+                          "strategy": strategy, "cols": cols, "cats": cats, "cluster_size":  len(centroids),
+                          "centroids": centroids, "labels": labels, "lat": lat_col, "lon": lon_col},
                     status=status.HTTP_200_OK)

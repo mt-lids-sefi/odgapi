@@ -198,11 +198,14 @@ class App:
     @staticmethod
     def get_cluster_configuration(pk_conf):
         conf = get_object_or_404(ClusterConfiguration, id=pk_conf)
+        [centroids, labels, dataset, cats] = conf.clusterize()
         ds = conf.get_ds()
         col_a = conf.get_col_a()
         col_b = conf.get_col_b()
-        cols = ds.get_cols()
-        data_preview = ds.get_data().to_json(orient='index')
+        cols = dataset.columns.values
+        data_preview = dataset.to_json(orient='index')
         data = json.loads(data_preview)
-        conf.clusterize()
-        return [col_a, col_b, cols, data, conf.get_strategy(), conf.get_labels(), conf.get_centroids()]
+        lat_col = ds.get_lat_col()
+        lon_col = ds.get_lon_col()
+
+        return [conf.get_name(), conf.get_description(), col_a, col_b, cols, data, conf.get_strategy(), labels, centroids, lat_col, lon_col, cats]
