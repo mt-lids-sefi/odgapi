@@ -14,3 +14,6 @@ class MeanShiftStrategy(ClusterStrategy):
         dataset.insert(0,  'cluster', labels)
         #dataset['cluster'] = labels
         return [centroids, labels, dataset]
+
+    def get_details(self):
+        return {'strategy': 'Mean Shift'}

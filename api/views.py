@@ -4,7 +4,7 @@ from rest_framework.decorators import api_view
 from rest_framework.parsers import FileUploadParser
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from api.serializers import DataFileSerializer, ConfigurationSerializer
+from api.serializers import DataFileSerializer, ConfigurationSerializer, ClusterizationSerializer
 from core.model.App import App
 from core.model.files.DataFile import DataFile
 from core.model.files.GeoDataSource import GeoDataSource
@@ -188,7 +188,30 @@ def layers_configuration(request, pk_a, pk_b):
     App.save_layers_configuration(pk_a, pk_b, popup_data, colours, name, description)
     return Response(data={"result":"ok"}, status=status.HTTP_200_OK)
 
+
 @api_view(["GET"])
 def get_ds_details(request, pk_ids):
     details = App.get_details(pk_ids)
     return Response(data={"details": details}, status=status.HTTP_200_OK)
+
+
+@api_view(["GET"])
+def get_configuration(request, pk_conf):
+    conf = App.get_configuration(pk_conf)
+    return Response(data={"conf": conf}, status=status.HTTP_200_OK)
+
+
+@api_view(["GET"])
+def get_clusterizations(request):
+    confs = App.get_clusterizations()
+    serializer = ConfigurationSerializer(confs, many=True)
+    return JsonResponse(serializer.data, safe=False)
+
+
+@api_view(["GET"])
+def get_clusterization(request, pk_conf):
+    [col_a, col_b, cols, data, strategy, labels, centroids] = App.get_cluster_configuration(pk_conf)
+    return Response(data={"col_a": col_a, "col_b": col_b, "data": data,
+                          "strategy": strategy, "cols": cols,
+                          "centroids": centroids, "labels": labels},
+                    status=status.HTTP_200_OK)

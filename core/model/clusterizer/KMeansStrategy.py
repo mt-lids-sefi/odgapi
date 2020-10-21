@@ -21,3 +21,6 @@ class KMeansStrategy(ClusterStrategy):
 
     def set_k(self, k):
         self.k = k
+
+    def get_details(self):
+        return {'strategy': 'KMeans'}

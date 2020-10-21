@@ -5,7 +5,6 @@ import numpy as np
 # Create your tests here.
 from core.model.App import App
 from core.model.clusterizer.Categorizer import Categorizer
-from core.model.clusterizer.MeanShiftStrategy import MeanShiftStrategy
 from core.model.files.DataFile import DataFile
 from core.model.files.GeoFile import GeoFile
 from core.model.linker.ClosestPoint import ClosestPoint
@@ -208,7 +207,7 @@ class SimilarityTest(TestCase):
         self.gf2 = GeoFile.objects.create(name='pba test', description='description', lat_col='y', lon_col='x',
                                           doc='test_files/establecimientos-salud-publicos_sample.csv')
 
-    def test_link(self):
+    def test_link_similarity_same_x_column(self):
         r_1 = Rule('JURISDICCI', 'verificado', [{"PROV": "Verificado"}])
         r_2 = Rule('JURISDICCI', 'valorVinchuca', [{"PROV": "patagonica"}])
         rules = [r_1, r_2]
@@ -217,5 +216,15 @@ class SimilarityTest(TestCase):
         ds_a = App.get_ds(self.gf1.get_id())
         ds_b = App.get_ds(self.gf2.get_id())
         dataset = link_strategy.link(ds_b, ds_a)
-        print(dataset)
+        self.assertTrue(len(dataset.index) == 1)
+
+    def test_link_similarity_same_y_column(self):
+        r_1 = Rule('verificado', 'JURISDICCI', [{"Verificado": "PROV"}])
+        r_2 = Rule('valorVinchuca', 'JURISDICCI', [{"patagonica": "PROV"}])
+        rules = [r_1, r_2]
+        params = {'rules': rules}
+        link_strategy = Similarity(params)
+        ds_a = App.get_ds(self.gf1.get_id())
+        ds_b = App.get_ds(self.gf2.get_id())
+        dataset = link_strategy.link(ds_a, ds_b)
         self.assertTrue(len(dataset.index) == 1)

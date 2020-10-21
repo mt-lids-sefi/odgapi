@@ -18,7 +18,8 @@ from django.urls import path, include
 from api.views import geo_files, geo_file, link_closest_point, link_polygon, link_closest_point_preview, \
     link_polygon_preview, link_closest_point_filter_preview, link_closest_point_filter, clusterize_kmeans_preview, \
     clusterize_meanshift_preview, data_files, data_file, get_configurations, clusterize_kmeans, clusterize_meanshift, \
-    link_similarity_preview, link_similarity, layers_configuration, get_ds_details
+    link_similarity_preview, link_similarity, layers_configuration, get_ds_details, get_configuration, get_clusterizations, \
+    get_clusterization
 from django.conf import settings
 from django.conf.urls.static import static
 
@@ -46,7 +47,12 @@ urlpatterns = [
     path("clusterize_meanshift/<int:pk_ids>/<str:name>/<str:description>/<str:col_a>/<str:col_b>", clusterize_meanshift, name="clusterize_meanshift"),
     path("clusterize_meanshift_preview/<int:pk_ids>/<str:col_a>/<str:col_b>", clusterize_meanshift_preview, name="clusterize_meanshift_preview"),
     path("layers_configuration/<int:pk_a>/<int:pk_b>", layers_configuration, name="layers_configuration"),
-    path("get_ds_details/<int:pk_ids>", get_ds_details, name="get_ds_details")
+    path("get_ds_details/<int:pk_ids>", get_ds_details, name="get_ds_details"),
+    path("configuration/<int:pk_conf>", get_configuration, name="get_configuration"),
+    path("clusterizations/", get_clusterizations, name="get_clusterizations"),
+    path("clusterization/<int:pk_conf>", get_clusterization, name="get_clusterization"),
+
+
 ]
 
 if settings.DEBUG:

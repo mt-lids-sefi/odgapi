@@ -23,6 +23,24 @@ class ClusterConfiguration(Configuration):
         self.col_a = col_a
         self.col_b = col_b
 
+    def get_col_a(self):
+        return self.col_a
+
+    def get_col_b(self):
+        return self.col_b
+
+    def get_strategy(self):
+        return self.cluster_strategy.get_details()
+
+    def get_ds(self):
+        return self.ds
+
+    def get_centroids(self):
+        return self.centroids
+
+    def get_labels(self):
+        return self.labels
+
 # en este caso, el resultado de apply será el de aplicar el algoritmo elegido sobre el ds
 # guardado y devolver la info para mostrar los datos en el front --> visualización
     def apply(self):

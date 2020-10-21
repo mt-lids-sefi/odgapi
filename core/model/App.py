@@ -32,6 +32,10 @@ class App:
     def get_configurations():
         return Configuration.objects.all()
 
+    @staticmethod
+    def get_clusterizations():
+        return ClusterConfiguration.objects.all()
+
     '''return a datasource as object to be used'''
     @staticmethod
     def get_ds(pk):
@@ -190,3 +194,15 @@ class App:
         ds = App.get_ds(pk_ids)
         details = ds.get_details()
         return details
+
+    @staticmethod
+    def get_cluster_configuration(pk_conf):
+        conf = get_object_or_404(ClusterConfiguration, id=pk_conf)
+        ds = conf.get_ds()
+        col_a = conf.get_col_a()
+        col_b = conf.get_col_b()
+        cols = ds.get_cols()
+        data_preview = ds.get_data().to_json(orient='index')
+        data = json.loads(data_preview)
+        conf.clusterize()
+        return [col_a, col_b, cols, data, conf.get_strategy(), conf.get_labels(), conf.get_centroids()]

@@ -1,5 +1,6 @@
 from rest_framework import serializers
 
+from core.model.configuration.ClusterConfiguration import ClusterConfiguration
 from core.model.configuration.Configuration import Configuration
 from core.model.files.DataFile import DataFile
 from core.model.files.GeoFile import GeoFile
@@ -44,3 +45,8 @@ class ConfigurationSerializer(serializers.ModelSerializer):
         model = Configuration
         fields = ['id', 'name', 'description']
 
+
+class ClusterizationSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ClusterConfiguration
+        fields = ['id', 'name', 'description', 'ds', 'col_a', 'col_b', 'centroids', 'labels', 'cluster_strategy']
