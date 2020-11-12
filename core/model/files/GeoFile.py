@@ -1,16 +1,17 @@
-from core.model.files.IDataSource import IDataSource
+from core.model.files.GeoDataSource import GeoDataSource
 from django.db import models
 from django.core.validators import FileExtensionValidator
 import pandas as pd
 import numpy as np
 
 
-class File (IDataSource):
+class GeoFile (GeoDataSource):
     doc = models.FileField(upload_to='files/', verbose_name='Archivo',
                            validators=[FileExtensionValidator(allowed_extensions=['csv'])])
     uploaded_at = models.DateTimeField(auto_now_add=True)
 
     def save(self, *args, **kwargs):
+        #sep=';', encoding = "ISO-8859-1"
         dataset = pd.read_csv(self.doc, error_bad_lines=False)
         self.dataset = dataset
         self.clean_data()
@@ -29,8 +30,10 @@ class File (IDataSource):
         df[lat] = df[lat].replace(r'^$', np.nan, regex=True)
         df[lat] = df[lat].fillna(-0.99999)
         df[lat] = pd.to_numeric(df[lat])
+        df.columns = df.columns.str.replace(".", "_")
         self.dataset = df
 
-    '''returns the dataset'''
-    def get_data(self):
-        return self.dataset
+    def get_details(self):
+        geo_details = {'doc': self.doc.name, 'uploaded_at': self.uploaded_at.ctime()}
+        geo_details.update(super().get_details())
+        return geo_details

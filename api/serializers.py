@@ -1,28 +1,52 @@
 from rest_framework import serializers
-from core.model.files.File import File
-from core.model.files.LinkedFile import LinkedFile
+
+from core.model.configuration.ClusterConfiguration import ClusterConfiguration
+from core.model.configuration.Configuration import Configuration
+from core.model.files.DataFile import DataFile
+from core.model.files.GeoFile import GeoFile
+from core.model.files.GeoLinkedFile import GeoLinkedFile
 
 
-class FileSerializer(serializers.ModelSerializer):
+class GeoFileSerializer(serializers.ModelSerializer):
     class Meta:
-        model = File
+        model = GeoFile
         fields = ['id', 'name', 'description', 'lat_col', 'lon_col', 'doc']
 
 
-class LinkedFileSerializer(serializers.ModelSerializer):
+class DataFileSerializer(serializers.ModelSerializer):
     class Meta:
-        model = LinkedFile
+        model = DataFile
+        fields = ['id', 'name', 'description', 'doc']
+
+
+class GeoLinkedFileSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = GeoLinkedFile
         fields = ['id', 'name', 'description', 'lat_col', 'lon_col']
 
 
 class IDataSourceSerializer(serializers.Serializer):
     @classmethod
     def get_serializer(cls, model):
-        if model == File:
-            return FileSerializer
-        elif model == LinkedFile:
-            return LinkedFileSerializer
+        if model == GeoFile:
+            return GeoFileSerializer
+        elif model == DataFile:
+            return DataFileSerializer
+        elif model == GeoLinkedFile:
+            return GeoLinkedFileSerializer
 
     def to_representation(self, instance):
         serializer = self.get_serializer(instance.__class__)
         return serializer(instance, context=self.context).data
+
+
+class ConfigurationSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Configuration
+        fields = ['id', 'name', 'description']
+
+
+class ClusterizationSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ClusterConfiguration
+        fields = ['id', 'name', 'description', 'ds', 'col_a', 'col_b', 'centroids', 'labels', 'cluster_strategy']

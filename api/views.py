@@ -4,78 +4,83 @@ from rest_framework.decorators import api_view
 from rest_framework.parsers import FileUploadParser
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from api import utils
-import pandas as pd
-import numpy as np
-
+from api.serializers import DataFileSerializer, ConfigurationSerializer, ClusterizationSerializer
 from core.model.App import App
-from core.model.files.File import File
-from core.model.files.IDataSource import IDataSource
-from core.model.linker.ClosestPoint import ClosestPoint
-from .serializers import FileSerializer, IDataSourceSerializer
+from core.model.files.DataFile import DataFile
+from core.model.files.GeoDataSource import GeoDataSource
+from .serializers import GeoFileSerializer, IDataSourceSerializer
 from django.shortcuts import get_object_or_404
 import json
 
 
 # This will return a list of files
 @api_view(["GET"])
-def file(request):
-    files = IDataSource.objects.all()
+def geo_files(request):
+    files = App.get_geo_files()
+    serializer = IDataSourceSerializer(files, many=True)
+    return JsonResponse(serializer.data, safe=False)
+
+
+# This will return a list of configurations
+@api_view(["GET"])
+def get_configurations(request):
+    confs = App.get_configurations()
+    serializer = ConfigurationSerializer(confs, many=True)
+    return JsonResponse(serializer.data, safe=False)
+
+
+# This will return a list of files
+@api_view(["GET"])
+def data_files(request):
+    files = App.get_data_files()
     serializer = IDataSourceSerializer(files, many=True)
     return JsonResponse(serializer.data, safe=False)
 
 
 @api_view(["GET"])
-def file_data(request, pk):
-    source = get_object_or_404(IDataSource, id=pk)
+def data_file(request, pk):
+    source = get_object_or_404(DataFile, id=pk)
+    d = source.get_data()
+    d = d.to_json(orient='index')
+    cols = source.get_cols()
+    return Response(
+        data={"rows": json.loads(d), "name": source.name,
+              "desc": source.description, "cols": cols}, status=status.HTTP_200_OK)
+
+
+@api_view(["GET"])
+def geo_file(request, pk):
+    source = get_object_or_404(GeoDataSource, id=pk)
     d = source.get_data()
     d = d.to_json(orient='index')
     cols = source.get_cols()
     return Response(
         data={"rows": json.loads(d), "lat_col": source.lat_col, "lon_col": source.lon_col, "name": source.name,
-              "desc": source.description, "cols": cols}, status=status.HTTP_200_OK)
+              "desc": source.   description, "cols": cols}, status=status.HTTP_200_OK)
 
 
-
-@api_view(["GET"])
-def files_join(request, pkA, pkB, max_distance):
-    fileA = get_object_or_404(File, document_id=pkA)
-    fileB = get_object_or_404(File, document_id=pkB)
-    fileA_df = pd.read_csv(fileA.doc, error_bad_lines=False)
-    fileB_df = pd.read_csv(fileB.doc, error_bad_lines=False)
-
-    fileA_df = fileA_df[np.isfinite(fileA_df[fileA.lat_col])]
-    fileA_df = fileA_df[np.isfinite(fileA_df[fileA.lon_col])]
-
-    fileB_df = fileB_df[np.isfinite(fileB_df[fileB.lat_col])]
-    fileB_df = fileB_df[np.isfinite(fileB_df[fileB.lon_col])]
-
-    fileA_df['pointA'] = [(x, y) for x, y in zip(fileA_df[fileA.lat_col], fileA_df[fileA.lon_col])]
-    fileB_df['pointB'] = [(x, y) for x, y in zip(fileB_df[fileB.lat_col], fileB_df[fileB.lon_col])]
-
-    fileA_df['distances'] = [utils.haversine_np(x, y, list(fileB_df[fileB.lat_col]), list(fileB_df[fileB.lon_col])) for
-                             x, y in
-                             zip(fileA_df[fileA.lat_col], fileA_df[fileA.lon_col])]
-    fileA_df['closest_point'] = [fileB_df.iloc[x.argmin()]['pointB'] for x in fileA_df['distances']]
-    fileA_df['closest_dist'] = [min(x) for x in fileA_df['distances']]
-    fileA_df['nearby_points'] = [utils.nearby_points(x, max_distance) for x in fileA_df['distances']]
-    fileA_df['count'] = [len(x) for x in fileA_df['nearby_points']]
-    unrolled = utils.unroll(fileA_df)
-    joined = utils.join_dfs(unrolled, fileA_df, fileB_df)
-    print(len(joined.index))
-    joined = joined.drop(columns=['distances'])
-    joined = joined.to_json(orient='index')
-    d = json.loads(joined)
-    return Response(data={"PEPE": d}, status=status.HTTP_200_OK)
-
-
-#save FILE endpoint.
+# save FILE endpoint.
 class FileUploadView(APIView):
     parser_class = (FileUploadParser,)
 
     def post(self, request, *args, **kwargs):
 
-        file_serializer = FileSerializer(data=request.data, context={"request": request})
+        file_serializer = GeoFileSerializer(data=request.data, context={"request": request})
+
+        if file_serializer.is_valid():
+            file_serializer.save()
+            return Response(file_serializer.data, status=status.HTTP_201_CREATED)
+        else:
+            return Response(file_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+# save FILE endpoint.
+class DataFileUploadView(APIView):
+    parser_class = (FileUploadParser,)
+
+    def post(self, request, *args, **kwargs):
+
+        file_serializer = DataFileSerializer(data=request.data, context={"request": request})
 
         if file_serializer.is_valid():
             file_serializer.save()
@@ -85,15 +90,129 @@ class FileUploadView(APIView):
 
 
 @api_view(["GET"])
-def link_closest_point(request, pk_a, pk_b, max_distance):
-    #create the strategy
-    params = {'distance': max_distance}
-    link_strategy = ClosestPoint(params)
+def link_closest_point(request, pk_a, pk_b, name, description):
+    params = {'distance': 0, 'filter': False}
+    linked_file = App.link_closest_points(pk_a, pk_b,  name, description, params)
+    [data, cols] = App.make_response_link(linked_file.get_data())
+    return Response(data={"data": data, "id": linked_file.get_id(), "cols": cols}, status=status.HTTP_200_OK)
 
-    #create & save the linkedfile
-    linked_file = App.link_files(pk_a, pk_b, link_strategy)
 
-    #api specific
-    data = linked_file.get_data().to_json(orient='index')
-    data = json.loads(data)
-    return Response(data={"data": data}, status=status.HTTP_200_OK)
+@api_view(["GET"])
+def link_closest_point_filter(request, pk_a, pk_b, max_distance, name, description):
+    # create the strategy
+    params = {'distance': max_distance/1000, 'filter': True}
+    linked_file = App.link_closest_points(pk_a, pk_b, name, description, params)
+    [data, cols] = App.make_response_link(linked_file.get_data())
+    return Response(data={"data": data, "id": linked_file.get_id(), "cols": cols}, status=status.HTTP_200_OK)
+
+
+@api_view(["GET"])
+def link_polygon(request, pk_a, pk_b, max_distance, name, description):
+    params = {'distance': max_distance/1000}
+    linked_file = App.link_polygon(pk_a, pk_b, name, description, params)
+    [data, cols] = App.make_response_link(linked_file.get_data())
+    return Response(data={"data": data, "id": linked_file.get_id(), "cols": cols}, status=status.HTTP_200_OK)
+
+
+@api_view(["GET"])
+def link_closest_point_preview(request, pk_a, pk_b):
+    params = {'distance': 0, 'filter': False}
+    results = App.link_files_closest_point_preview(pk_a, pk_b, params)
+    [data, cols] = App.make_response_link(results)
+    return Response(data={"data": data, "cols": cols}, status=status.HTTP_200_OK)
+
+
+@api_view(["GET"])
+def link_closest_point_filter_preview(request, pk_a, pk_b, max_distance):
+    params = {'distance': max_distance/1000, 'filter': True}
+    results = App.link_files_closest_point_preview(pk_a, pk_b, params)
+    [data, cols] = App.make_response_link(results)
+    return Response(data={"data": data, "cols": cols}, status=status.HTTP_200_OK)
+
+
+@api_view(["GET"])
+def link_polygon_preview(request, pk_a, pk_b, max_distance):
+    params = {'distance': max_distance/1000}
+    results = App.link_files_polygon_preview(pk_a, pk_b, params)
+    [data, cols] = App.make_response_link(results)
+    return Response(data={"data": data, "cols": cols}, status=status.HTTP_200_OK)
+
+
+@api_view(["GET"])
+def clusterize_kmeans_preview(request, pk_ids, col_a, col_b, k=3):
+    results = App.clusterize_kmeans_preview(pk_ids, col_a, col_b, k)
+    [centroids, labels, data, cluster_size, cats, cols] = App.make_response_cluster(results)
+    return Response(data={"centroids": centroids, "labels": labels, "data": data, "cluster_size": cluster_size, "cats": cats, "cols": cols}, status=status.HTTP_200_OK)
+
+
+@api_view(["GET"])
+def clusterize_meanshift_preview(request, pk_ids, col_a, col_b):
+    results = App.clusterize_meanshift_preview(pk_ids,  col_a, col_b)
+    [centroids, labels, data, cluster_size, cats, cols] = App.make_response_cluster(results)
+    return Response(data={"centroids": centroids, "labels": labels, "data": data, "cluster_size": cluster_size, "cats": cats, "cols": cols}, status=status.HTTP_200_OK)
+
+
+@api_view(["GET"])
+def clusterize_meanshift(request, pk_ids, name, description, col_a, col_b):
+    results = App.clusterize_meanshift(name, description, pk_ids,  col_a, col_b)
+    return Response(data={"results":"OK"}, status=status.HTTP_200_OK)
+
+
+@api_view(["GET"])
+def clusterize_kmeans(request, pk_ids, name,  description, col_a, col_b, k=3):
+    results = App.clusterize_kmeans(name, description, pk_ids, col_a, col_b, k)
+    return Response(data={"results": "OK"}, status=status.HTTP_200_OK)
+
+
+@api_view(["POST"])
+def link_similarity_preview(request, pk_a, pk_b):
+    rules = request.data['rules']
+    results = App.link_files_similarity_preview(pk_a, pk_b, {'rules': rules})
+    [data, cols] = App.make_response_link(results)
+    return Response(data={"data": data, "cols": cols}, status=status.HTTP_200_OK)
+
+
+@api_view(["POST"])
+def link_similarity(request, pk_a, pk_b, name, description):
+    rules = request.data['rules']
+    linked_file = App.link_similarity(pk_a, pk_b, name, description, {'rules': rules})
+    [data, cols] = App.make_response_link(linked_file.get_data())
+    return Response(data={"data": data, "id": linked_file.get_id(), "cols": cols}, status=status.HTTP_200_OK)
+
+@api_view(["POST"])
+def layers_configuration(request, pk_a, pk_b):
+    popup_data = request.data['popup_data']
+    colours = request.data['colours']
+    name = request.data['name']
+    description = request.data['description']
+    App.save_layers_configuration(pk_a, pk_b, popup_data, colours, name, description)
+    return Response(data={"result":"ok"}, status=status.HTTP_200_OK)
+
+
+@api_view(["GET"])
+def get_ds_details(request, pk_ids):
+    details = App.get_details(pk_ids)
+    return Response(data={"details": details}, status=status.HTTP_200_OK)
+
+
+@api_view(["GET"])
+def get_configuration(request, pk_conf):
+    conf = App.get_configuration(pk_conf)
+    return Response(data={"conf": conf}, status=status.HTTP_200_OK)
+
+
+@api_view(["GET"])
+def get_clusterizations(request):
+    confs = App.get_clusterizations()
+    serializer = ConfigurationSerializer(confs, many=True)
+    return JsonResponse(serializer.data, safe=False)
+
+
+@api_view(["GET"])
+def get_clusterization(request, pk_conf):
+    [name, description, col_a, col_b, cols, data, strategy,
+                    labels, centroids, lat_col, lon_col, cats] = App.get_cluster_configuration(pk_conf)
+    return Response(data={"name": name, "description": description,  "col_a": col_a, "col_b": col_b, "data": data,
+                          "strategy": strategy, "cols": cols, "cats": cats, "cluster_size":  len(centroids),
+                          "centroids": centroids, "labels": labels, "lat": lat_col, "lon": lon_col},
+                    status=status.HTTP_200_OK)

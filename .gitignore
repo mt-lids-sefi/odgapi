@@ -7,7 +7,7 @@ core/migrations/__pycache__/*
 odg/__pycache__/*
 .vscode/
 core/migrations/*
-media/*
+media/files/*
 db.sqlite3
 __pycache__/*
 venv/
@@ -19,3 +19,10 @@ core/__init__.pyc
 odg/__init__.pyc
 odg/settings.pyc
 core/model/linker/__pycache__/*
+core/model/clusterizer/__pycache__/*
+core/model/configuration/__pycache__/*
+pyenv/
+.DS_Store
+core/.DS_Store
+core/model/.DS_Store
+core/model/clusterizer/.DS_Store
